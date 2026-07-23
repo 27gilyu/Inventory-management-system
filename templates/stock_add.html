@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Stock &middot; DeckTrack</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+    <!-- Top navigation bar -->
+    <header class="topbar">
+        <span class="brand">
+            <span class="logo">&#9635;</span>
+            Deck<span class="brand-accent">Track</span>
+        </span>
+        <nav class="nav-links">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('stock') }}" class="active">Stock</a>
+            <span>Sales</span>
+            <span>Invoices</span>
+            <span>Estimator</span>
+            <span>Job Map</span>
+        </nav>
+        <span class="nav-user">Davinder Brar</span>
+    </header>
+
+    <section class="page">
+        <h1>Add stock item</h1>
+        <p class="muted">Add a new product to the warehouse stock list.</p>
+
+        <div class="card form-card">
+            {% if error %}
+            <div class="form-error">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('stock_add') }}">
+                <div class="form-group">
+                    <label for="name">Item name</label>
+                    <input type="text" id="name" name="name" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category">
+                        {% for category in categories %}
+                        <option value="{{ category }}">{{ category }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="quantity">Quantity on hand</label>
+                        <input type="number" id="quantity" name="quantity" min="0" value="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Unit price ($)</label>
+                        <input type="number" id="price" name="price" min="0" step="0.01" value="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="min_level">Minimum level</label>
+                        <input type="number" id="min_level" name="min_level" min="0" value="12" required>
+                    </div>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-green">Add item</button>
+                    <a href="{{ url_for('stock') }}" class="btn btn-grey">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><b>DeckTrack</b> &middot; Eco Deckmasters &middot; 15B Amherst Dr, Truganina VIC 3029</p>
+    </footer>
+
+</body>
+</html>

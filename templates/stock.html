@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock &middot; DeckTrack</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+    <!-- Top navigation bar -->
+    <header class="topbar">
+        <span class="brand">
+            <span class="logo">&#9635;</span>
+            Deck<span class="brand-accent">Track</span>
+        </span>
+        <nav class="nav-links">
+            <a href="{{ url_for('index') }}">Home</a>
+            <span class="active">Stock</span>
+            <span>Sales</span>
+            <span>Invoices</span>
+            <span>Estimator</span>
+            <span>Job Map</span>
+        </nav>
+        <span class="nav-user">Davinder Brar</span>
+    </header>
+
+    <section class="page">
+        <div class="page-head">
+            <div>
+                <h1>Stock</h1>
+                <p class="muted">{{ total_items }} items in the warehouse &middot; {{ low_count }} low on stock.</p>
+            </div>
+            <a href="{{ url_for('stock_add') }}" class="btn btn-green">+ Add stock item</a>
+        </div>
+
+        {% for group in groups %}
+        <h2 class="cat-title">{{ group.category }}</h2>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th class="num">Quantity</th>
+                        <th class="num">Unit price</th>
+                        <th class="num">Min level</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in group.products %}
+                    <tr class="{{ 'low' if item.quantity <= item.min_level }}">
+                        <td>{{ item.name }}</td>
+                        <td class="num">{{ item.quantity }}</td>
+                        <td class="num">${{ '%.2f'|format(item.price) }}</td>
+                        <td class="num">{{ item.min_level }}</td>
+                        <td>
+                            {% if item.quantity <= item.min_level %}
+                                <span class="pill low">Low</span>
+                            {% else %}
+                                <span class="pill ok">OK</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endfor %}
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><b>DeckTrack</b> &middot; Eco Deckmasters &middot; 15B Amherst Dr, Truganina VIC 3029</p>
+    </footer>
+
+</body>
+</html>

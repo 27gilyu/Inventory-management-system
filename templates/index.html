@@ -16,7 +16,7 @@
         </span>
         <nav class="nav-links">
             <span class="active">Home</span>
-            <span>Stock</span>
+            <a href="{{ url_for('stock') }}">Stock</a>
             <span>Sales</span>
             <span>Invoices</span>
             <span>Estimator</span>
@@ -37,21 +37,21 @@
                 <span class="dot"></span> Today
             </div>
             <div class="mini-stat">
-                <span>Stock items</span><b>10</b>
+                <span>Stock items</span><b>{{ total_items }}</b>
             </div>
             <div class="mini-stat">
-                <span>Low stock</span><b class="warn">3</b>
+                <span>Low stock</span><b class="warn">{{ low_count }}</b>
             </div>
             <div class="mini-stat">
-                <span>Sales today</span><b>12</b>
+                <span>Sales today</span><b>0</b>
             </div>
-            <div class="mini-alert">&#9888; Composite Decking Board is running low</div>
+            <div class="mini-alert">&#9888; {{ low_count }} items are low on stock &mdash; check the Stock page</div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer class="footer">
-        <p><b>DeckTrack</b> &middot; Eco Deckmasters &middot; Dandenong South VIC</p>
+        <p><b>DeckTrack</b> &middot; Eco Deckmasters &middot; 15B Amherst Dr, Truganina VIC 3029</p>
     </footer>
 
 </body>

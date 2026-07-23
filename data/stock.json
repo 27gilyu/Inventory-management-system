@@ -1,0 +1,898 @@
+[
+  {
+    "id": 1,
+    "name": "Fence 2.4M CYP 125x75 Post + 1.8 Pailing",
+    "category": "Hardwood Fence Packages",
+    "quantity": 6,
+    "price": 43.3,
+    "min_level": 12
+  },
+  {
+    "id": 2,
+    "name": "Fence 2.7M CYP 125x75 Post + 1.8 Pailing + Capping",
+    "category": "Hardwood Fence Packages",
+    "quantity": 19,
+    "price": 50.53,
+    "min_level": 12
+  },
+  {
+    "id": 3,
+    "name": "Fence 2.4M Hardwood 5x3 Post + 1.8 Pailing",
+    "category": "Hardwood Fence Packages",
+    "quantity": 32,
+    "price": 43.75,
+    "min_level": 12
+  },
+  {
+    "id": 4,
+    "name": "Fence 2.7M Hardwood 5x3 Post + 1.8 Pailing + Capping",
+    "category": "Hardwood Fence Packages",
+    "quantity": 45,
+    "price": 51.02,
+    "min_level": 12
+  },
+  {
+    "id": 5,
+    "name": "Fence Panel with 2.7M Post",
+    "category": "Hardwood Fence Packages",
+    "quantity": 58,
+    "price": 95.0,
+    "min_level": 12
+  },
+  {
+    "id": 6,
+    "name": "Hardwood Post 125x75 - 2.4M",
+    "category": "Hardwood & Cypress Posts",
+    "quantity": 11,
+    "price": 37.2,
+    "min_level": 12
+  },
+  {
+    "id": 7,
+    "name": "Hardwood Post 125x75 - 2.7M",
+    "category": "Hardwood & Cypress Posts",
+    "quantity": 24,
+    "price": 41.85,
+    "min_level": 12
+  },
+  {
+    "id": 8,
+    "name": "Hardwood Post 125x75 - 3M",
+    "category": "Hardwood & Cypress Posts",
+    "quantity": 37,
+    "price": 46.5,
+    "min_level": 12
+  },
+  {
+    "id": 9,
+    "name": "Cypress Post 125x75 - 2.4M",
+    "category": "Hardwood & Cypress Posts",
+    "quantity": 50,
+    "price": 34.8,
+    "min_level": 12
+  },
+  {
+    "id": 10,
+    "name": "Cypress Post 125x75 - 2.7M",
+    "category": "Hardwood & Cypress Posts",
+    "quantity": 63,
+    "price": 40.5,
+    "min_level": 12
+  },
+  {
+    "id": 11,
+    "name": "Cypress Post 125x75 - 3M",
+    "category": "Hardwood & Cypress Posts",
+    "quantity": 16,
+    "price": 45.0,
+    "min_level": 12
+  },
+  {
+    "id": 12,
+    "name": "Cypress Post 125x75 - 3.6M",
+    "category": "Hardwood & Cypress Posts",
+    "quantity": 29,
+    "price": 54.0,
+    "min_level": 12
+  },
+  {
+    "id": 13,
+    "name": "Cypress Post 125x125 - 2.7M",
+    "category": "Hardwood & Cypress Posts",
+    "quantity": 42,
+    "price": 62.1,
+    "min_level": 12
+  },
+  {
+    "id": 14,
+    "name": "Cypress Post 125x125 - 3.6M",
+    "category": "Hardwood & Cypress Posts",
+    "quantity": 55,
+    "price": 82.8,
+    "min_level": 12
+  },
+  {
+    "id": 15,
+    "name": "T3 F5 Treated Pine 70x35 - 6M",
+    "category": "Treated Pine (T3 F5 / H3)",
+    "quantity": 8,
+    "price": 28.5,
+    "min_level": 12
+  },
+  {
+    "id": 16,
+    "name": "T3 F5 Treated Pine 70x45 - 3.6M",
+    "category": "Treated Pine (T3 F5 / H3)",
+    "quantity": 21,
+    "price": 19.8,
+    "min_level": 12
+  },
+  {
+    "id": 17,
+    "name": "T3 F5 Treated Pine 70x45 - 6M",
+    "category": "Treated Pine (T3 F5 / H3)",
+    "quantity": 34,
+    "price": 33.0,
+    "min_level": 12
+  },
+  {
+    "id": 18,
+    "name": "T3 F5 Treated Pine 90x35 - 6M",
+    "category": "Treated Pine (T3 F5 / H3)",
+    "quantity": 47,
+    "price": 30.0,
+    "min_level": 12
+  },
+  {
+    "id": 19,
+    "name": "T3 F5 Treated Pine 90x45 - 3.6M",
+    "category": "Treated Pine (T3 F5 / H3)",
+    "quantity": 60,
+    "price": 23.4,
+    "min_level": 12
+  },
+  {
+    "id": 20,
+    "name": "T3 F5 Treated Pine 90x45 - 4.2M",
+    "category": "Treated Pine (T3 F5 / H3)",
+    "quantity": 13,
+    "price": 27.3,
+    "min_level": 12
+  },
+  {
+    "id": 21,
+    "name": "T3 F5 Treated Pine 90x45 - 5.4M",
+    "category": "Treated Pine (T3 F5 / H3)",
+    "quantity": 26,
+    "price": 35.1,
+    "min_level": 12
+  },
+  {
+    "id": 22,
+    "name": "T3 F5 Treated Pine 90x45 - 6M",
+    "category": "Treated Pine (T3 F5 / H3)",
+    "quantity": 39,
+    "price": 39.0,
+    "min_level": 12
+  },
+  {
+    "id": 23,
+    "name": "T3 F5 Treated Pine 140x45 - 3.6M",
+    "category": "Treated Pine (T3 F5 / H3)",
+    "quantity": 52,
+    "price": 32.4,
+    "min_level": 12
+  },
+  {
+    "id": 24,
+    "name": "T3 F5 Treated Pine 140x45 - 4.8M",
+    "category": "Treated Pine (T3 F5 / H3)",
+    "quantity": 65,
+    "price": 43.2,
+    "min_level": 12
+  },
+  {
+    "id": 25,
+    "name": "T3 F5 Treated Pine 140x45 - 6M",
+    "category": "Treated Pine (T3 F5 / H3)",
+    "quantity": 18,
+    "price": 54.0,
+    "min_level": 12
+  },
+  {
+    "id": 26,
+    "name": "T3 F5 Treated Pine 190x45 - 6M",
+    "category": "Treated Pine (T3 F5 / H3)",
+    "quantity": 31,
+    "price": 66.0,
+    "min_level": 12
+  },
+  {
+    "id": 27,
+    "name": "Treated Pine H3 90x45 - 3M",
+    "category": "Treated Pine (T3 F5 / H3)",
+    "quantity": 44,
+    "price": 18.75,
+    "min_level": 12
+  },
+  {
+    "id": 28,
+    "name": "Treated Pine H3 90x45 - 5.4M",
+    "category": "Treated Pine (T3 F5 / H3)",
+    "quantity": 57,
+    "price": 33.75,
+    "min_level": 12
+  },
+  {
+    "id": 29,
+    "name": "Treated Pine Paling 150x12 - 1.8M",
+    "category": "Pailings, Rails, Capping & Plinth",
+    "quantity": 10,
+    "price": 2.2,
+    "min_level": 12
+  },
+  {
+    "id": 30,
+    "name": "Treated Pine Paling 100x12 - 1.8M",
+    "category": "Pailings, Rails, Capping & Plinth",
+    "quantity": 23,
+    "price": 1.65,
+    "min_level": 12
+  },
+  {
+    "id": 31,
+    "name": "Timber Rail 75x50 - 5.4M",
+    "category": "Pailings, Rails, Capping & Plinth",
+    "quantity": 36,
+    "price": 15.5,
+    "min_level": 12
+  },
+  {
+    "id": 32,
+    "name": "Timber Rail 70x35 - 4.2M",
+    "category": "Pailings, Rails, Capping & Plinth",
+    "quantity": 49,
+    "price": 18.9,
+    "min_level": 12
+  },
+  {
+    "id": 33,
+    "name": "Timber Pine Capping 90x45 H3",
+    "category": "Pailings, Rails, Capping & Plinth",
+    "quantity": 62,
+    "price": 31.5,
+    "min_level": 12
+  },
+  {
+    "id": 34,
+    "name": "Timber Plinth Board 150x25 - 5.4M",
+    "category": "Pailings, Rails, Capping & Plinth",
+    "quantity": 15,
+    "price": 15.5,
+    "min_level": 12
+  },
+  {
+    "id": 35,
+    "name": "Gen3 Fascia 140x23 - 5.4M",
+    "category": "Pailings, Rails, Capping & Plinth",
+    "quantity": 28,
+    "price": 69.0,
+    "min_level": 12
+  },
+  {
+    "id": 36,
+    "name": "Fascia Board Premium",
+    "category": "Pailings, Rails, Capping & Plinth",
+    "quantity": 41,
+    "price": 69.0,
+    "min_level": 12
+  },
+  {
+    "id": 37,
+    "name": "Sheet Metline 1790MM High",
+    "category": "Metal Fence - All Colours",
+    "quantity": 54,
+    "price": 22.25,
+    "min_level": 12
+  },
+  {
+    "id": 38,
+    "name": "Sheet 830MM",
+    "category": "Metal Fence - All Colours",
+    "quantity": 7,
+    "price": 22.25,
+    "min_level": 12
+  },
+  {
+    "id": 39,
+    "name": "Rail 3125MM / 3100MM",
+    "category": "Metal Fence - All Colours",
+    "quantity": 20,
+    "price": 16.28,
+    "min_level": 12
+  },
+  {
+    "id": 40,
+    "name": "Rail 2365MM / 2380MM",
+    "category": "Metal Fence - All Colours",
+    "quantity": 33,
+    "price": 11.5,
+    "min_level": 12
+  },
+  {
+    "id": 41,
+    "name": "Post 3M",
+    "category": "Metal Fence - All Colours",
+    "quantity": 46,
+    "price": 15.77,
+    "min_level": 12
+  },
+  {
+    "id": 42,
+    "name": "Post 2.7M",
+    "category": "Metal Fence - All Colours",
+    "quantity": 59,
+    "price": 13.68,
+    "min_level": 12
+  },
+  {
+    "id": 43,
+    "name": "Gate Style",
+    "category": "Metal Fence - All Colours",
+    "quantity": 12,
+    "price": 90.0,
+    "min_level": 12
+  },
+  {
+    "id": 44,
+    "name": "65x65 - 2.7M Grey",
+    "category": "Powder Coated Metal Posts",
+    "quantity": 25,
+    "price": 59.4,
+    "min_level": 12
+  },
+  {
+    "id": 45,
+    "name": "65x65 - 2.7M Dark Grey",
+    "category": "Powder Coated Metal Posts",
+    "quantity": 38,
+    "price": 59.4,
+    "min_level": 12
+  },
+  {
+    "id": 46,
+    "name": "65x65 - 2.7M Black",
+    "category": "Powder Coated Metal Posts",
+    "quantity": 51,
+    "price": 59.4,
+    "min_level": 12
+  },
+  {
+    "id": 47,
+    "name": "65x65 - 3M Grey",
+    "category": "Powder Coated Metal Posts",
+    "quantity": 64,
+    "price": 66.0,
+    "min_level": 12
+  },
+  {
+    "id": 48,
+    "name": "65x65 - 3M Dark Grey",
+    "category": "Powder Coated Metal Posts",
+    "quantity": 17,
+    "price": 66.0,
+    "min_level": 12
+  },
+  {
+    "id": 49,
+    "name": "65x65 - 3M Black",
+    "category": "Powder Coated Metal Posts",
+    "quantity": 30,
+    "price": 66.0,
+    "min_level": 12
+  },
+  {
+    "id": 50,
+    "name": "65x65 - 2M Metal Post",
+    "category": "Powder Coated Metal Posts",
+    "quantity": 43,
+    "price": 45.0,
+    "min_level": 12
+  },
+  {
+    "id": 51,
+    "name": "65x65 - 2.7M Powder Coated",
+    "category": "Powder Coated Metal Posts",
+    "quantity": 56,
+    "price": 80.0,
+    "min_level": 12
+  },
+  {
+    "id": 52,
+    "name": "90x90 - 2.7M H4 F7 LOSP Post",
+    "category": "LOSP Posts",
+    "quantity": 9,
+    "price": 67.5,
+    "min_level": 12
+  },
+  {
+    "id": 53,
+    "name": "90x90 - 3.6M H4 F7 LOSP Post",
+    "category": "LOSP Posts",
+    "quantity": 22,
+    "price": 90.0,
+    "min_level": 12
+  },
+  {
+    "id": 54,
+    "name": "Black Bamboo Panel 1800x1000MM",
+    "category": "Bamboo Panels",
+    "quantity": 35,
+    "price": 35.0,
+    "min_level": 12
+  },
+  {
+    "id": 55,
+    "name": "Black Bamboo Panel 2000x1000MM",
+    "category": "Bamboo Panels",
+    "quantity": 48,
+    "price": 40.0,
+    "min_level": 12
+  },
+  {
+    "id": 56,
+    "name": "Black Bamboo Panel 2200x1000MM",
+    "category": "Bamboo Panels",
+    "quantity": 61,
+    "price": 42.0,
+    "min_level": 12
+  },
+  {
+    "id": 57,
+    "name": "Black Bamboo Panel 2400x1000MM",
+    "category": "Bamboo Panels",
+    "quantity": 14,
+    "price": 45.0,
+    "min_level": 12
+  },
+  {
+    "id": 58,
+    "name": "Bamboo Capping",
+    "category": "Bamboo Panels",
+    "quantity": 27,
+    "price": 15.0,
+    "min_level": 12
+  },
+  {
+    "id": 59,
+    "name": "H Beam 900MM",
+    "category": "Galvanised H Beams",
+    "quantity": 40,
+    "price": 29.7,
+    "min_level": 12
+  },
+  {
+    "id": 60,
+    "name": "H Beam 1200MM",
+    "category": "Galvanised H Beams",
+    "quantity": 53,
+    "price": 39.6,
+    "min_level": 12
+  },
+  {
+    "id": 61,
+    "name": "H Beam 1500MM",
+    "category": "Galvanised H Beams",
+    "quantity": 6,
+    "price": 49.5,
+    "min_level": 12
+  },
+  {
+    "id": 62,
+    "name": "H Beam 2100MM",
+    "category": "Galvanised H Beams",
+    "quantity": 19,
+    "price": 69.3,
+    "min_level": 12
+  },
+  {
+    "id": 63,
+    "name": "H Beam 2400MM",
+    "category": "Galvanised H Beams",
+    "quantity": 32,
+    "price": 79.2,
+    "min_level": 12
+  },
+  {
+    "id": 64,
+    "name": "H Beam 3000MM",
+    "category": "Galvanised H Beams",
+    "quantity": 45,
+    "price": 99.0,
+    "min_level": 12
+  },
+  {
+    "id": 65,
+    "name": "H Beam 3300MM",
+    "category": "Galvanised H Beams",
+    "quantity": 58,
+    "price": 108.9,
+    "min_level": 12
+  },
+  {
+    "id": 66,
+    "name": "H Beam 3600MM",
+    "category": "Galvanised H Beams",
+    "quantity": 11,
+    "price": 118.8,
+    "min_level": 12
+  },
+  {
+    "id": 67,
+    "name": "H Beam 4800MM (150UC)",
+    "category": "Galvanised H Beams",
+    "quantity": 24,
+    "price": 336.0,
+    "min_level": 12
+  },
+  {
+    "id": 68,
+    "name": "H Beam (50MM) 900MM",
+    "category": "Galvanised H Beams",
+    "quantity": 37,
+    "price": 27.5,
+    "min_level": 12
+  },
+  {
+    "id": 69,
+    "name": "H Beam (50MM) 1.2M",
+    "category": "Galvanised H Beams",
+    "quantity": 50,
+    "price": 25.0,
+    "min_level": 12
+  },
+  {
+    "id": 70,
+    "name": "C Beam 900MM",
+    "category": "Galvanised C Beams",
+    "quantity": 63,
+    "price": 19.8,
+    "min_level": 12
+  },
+  {
+    "id": 71,
+    "name": "C Beam 1.2M",
+    "category": "Galvanised C Beams",
+    "quantity": 16,
+    "price": 26.4,
+    "min_level": 12
+  },
+  {
+    "id": 72,
+    "name": "C Beam 1500MM",
+    "category": "Galvanised C Beams",
+    "quantity": 29,
+    "price": 33.0,
+    "min_level": 12
+  },
+  {
+    "id": 73,
+    "name": "C Beam 3300MM",
+    "category": "Galvanised C Beams",
+    "quantity": 42,
+    "price": 72.6,
+    "min_level": 12
+  },
+  {
+    "id": 74,
+    "name": "C Beam 3600MM",
+    "category": "Galvanised C Beams",
+    "quantity": 55,
+    "price": 79.2,
+    "min_level": 12
+  },
+  {
+    "id": 75,
+    "name": "C Beam 4800MM (150UC)",
+    "category": "Galvanised C Beams",
+    "quantity": 8,
+    "price": 288.0,
+    "min_level": 12
+  },
+  {
+    "id": 76,
+    "name": "C Beam (50MM) 900MM",
+    "category": "Galvanised C Beams",
+    "quantity": 21,
+    "price": 18.0,
+    "min_level": 12
+  },
+  {
+    "id": 77,
+    "name": "C Retainwall Post 800x50MM",
+    "category": "Galvanised C Beams",
+    "quantity": 34,
+    "price": 13.5,
+    "min_level": 12
+  },
+  {
+    "id": 78,
+    "name": "C Strep 1.8M",
+    "category": "Galvanised C Beams",
+    "quantity": 47,
+    "price": 4.55,
+    "min_level": 12
+  },
+  {
+    "id": 79,
+    "name": "Charcoal Cladding 2200MM",
+    "category": "Cladding",
+    "quantity": 60,
+    "price": 24.2,
+    "min_level": 12
+  },
+  {
+    "id": 80,
+    "name": "Charcoal Cladding 5400MM",
+    "category": "Cladding",
+    "quantity": 13,
+    "price": 60.5,
+    "min_level": 12
+  },
+  {
+    "id": 81,
+    "name": "Premium Turf 40MM - 2M",
+    "category": "Turf",
+    "quantity": 26,
+    "price": 17.0,
+    "min_level": 12
+  },
+  {
+    "id": 82,
+    "name": "Premium Turf 40MM - 3.6M",
+    "category": "Turf",
+    "quantity": 39,
+    "price": 17.0,
+    "min_level": 12
+  },
+  {
+    "id": 83,
+    "name": "Premium Turf 40MM - 4M",
+    "category": "Turf",
+    "quantity": 52,
+    "price": 17.0,
+    "min_level": 12
+  },
+  {
+    "id": 84,
+    "name": "Premium Turf 3M Wide 40MM",
+    "category": "Turf",
+    "quantity": 65,
+    "price": 17.0,
+    "min_level": 12
+  },
+  {
+    "id": 85,
+    "name": "EcoTurf 40MM - 2M",
+    "category": "Turf",
+    "quantity": 18,
+    "price": 15.0,
+    "min_level": 12
+  },
+  {
+    "id": 86,
+    "name": "EcoTurf 40MM - 3M",
+    "category": "Turf",
+    "quantity": 31,
+    "price": 15.0,
+    "min_level": 12
+  },
+  {
+    "id": 87,
+    "name": "EcoTurf 40MM - 4M",
+    "category": "Turf",
+    "quantity": 44,
+    "price": 15.0,
+    "min_level": 12
+  },
+  {
+    "id": 88,
+    "name": "Weed Mat 1 - 25M",
+    "category": "Turf",
+    "quantity": 57,
+    "price": 22.0,
+    "min_level": 12
+  },
+  {
+    "id": 89,
+    "name": "Turf Nails",
+    "category": "Turf",
+    "quantity": 10,
+    "price": 25.0,
+    "min_level": 12
+  },
+  {
+    "id": 90,
+    "name": "Turf Joining Tape",
+    "category": "Turf",
+    "quantity": 23,
+    "price": 15.0,
+    "min_level": 12
+  },
+  {
+    "id": 91,
+    "name": "U Pins",
+    "category": "Turf",
+    "quantity": 36,
+    "price": 25.0,
+    "min_level": 12
+  },
+  {
+    "id": 92,
+    "name": "WPC Decking Board 138x23 - 5.4M",
+    "category": "Decking",
+    "quantity": 49,
+    "price": 55.0,
+    "min_level": 12
+  },
+  {
+    "id": 93,
+    "name": "WPC Decking Clips",
+    "category": "Decking",
+    "quantity": 62,
+    "price": 30.0,
+    "min_level": 12
+  },
+  {
+    "id": 94,
+    "name": "Decking Screws",
+    "category": "Decking",
+    "quantity": 15,
+    "price": 95.0,
+    "min_level": 12
+  },
+  {
+    "id": 95,
+    "name": "Gate 1M Adjustable w/ Hinges",
+    "category": "Gates, Latches & Hardware",
+    "quantity": 28,
+    "price": 90.0,
+    "min_level": 12
+  },
+  {
+    "id": 96,
+    "name": "Gate 1.2M Adjustable w/ Hinges",
+    "category": "Gates, Latches & Hardware",
+    "quantity": 41,
+    "price": 95.0,
+    "min_level": 12
+  },
+  {
+    "id": 97,
+    "name": "D-Latch",
+    "category": "Gates, Latches & Hardware",
+    "quantity": 54,
+    "price": 12.0,
+    "min_level": 12
+  },
+  {
+    "id": 98,
+    "name": "D-Latch and Hinges",
+    "category": "Gates, Latches & Hardware",
+    "quantity": 7,
+    "price": 20.0,
+    "min_level": 12
+  },
+  {
+    "id": 99,
+    "name": "Drop Bolt",
+    "category": "Gates, Latches & Hardware",
+    "quantity": 20,
+    "price": 16.0,
+    "min_level": 12
+  },
+  {
+    "id": 100,
+    "name": "Pad Bolt",
+    "category": "Gates, Latches & Hardware",
+    "quantity": 33,
+    "price": 9.0,
+    "min_level": 12
+  },
+  {
+    "id": 101,
+    "name": "Coil Nails 2.5x57MM (9000 pcs)",
+    "category": "Fixings, Nails & Screws",
+    "quantity": 46,
+    "price": 80.0,
+    "min_level": 12
+  },
+  {
+    "id": 102,
+    "name": "Framing Nails 90MM (3000 pcs)",
+    "category": "Fixings, Nails & Screws",
+    "quantity": 59,
+    "price": 80.0,
+    "min_level": 12
+  },
+  {
+    "id": 103,
+    "name": "Gate Hard Nails",
+    "category": "Fixings, Nails & Screws",
+    "quantity": 12,
+    "price": 10.0,
+    "min_level": 12
+  },
+  {
+    "id": 104,
+    "name": "Screws 75MM (100 pcs)",
+    "category": "Fixings, Nails & Screws",
+    "quantity": 25,
+    "price": 20.0,
+    "min_level": 12
+  },
+  {
+    "id": 105,
+    "name": "Screws 100MM",
+    "category": "Fixings, Nails & Screws",
+    "quantity": 38,
+    "price": 20.0,
+    "min_level": 12
+  },
+  {
+    "id": 106,
+    "name": "Hex Head Screws 10g x16MM (100)",
+    "category": "Fixings, Nails & Screws",
+    "quantity": 51,
+    "price": 8.0,
+    "min_level": 12
+  },
+  {
+    "id": 107,
+    "name": "Hex Head Screws 10g x16MM (Full Pack)",
+    "category": "Fixings, Nails & Screws",
+    "quantity": 64,
+    "price": 62.0,
+    "min_level": 12
+  },
+  {
+    "id": 108,
+    "name": "Wall Plugs (10x80)MM",
+    "category": "Fixings, Nails & Screws",
+    "quantity": 17,
+    "price": 35.0,
+    "min_level": 12
+  },
+  {
+    "id": 109,
+    "name": "Rapid Set",
+    "category": "Cement & Consumables",
+    "quantity": 30,
+    "price": 9.5,
+    "min_level": 12
+  },
+  {
+    "id": 110,
+    "name": "GP Cement",
+    "category": "Cement & Consumables",
+    "quantity": 43,
+    "price": 8.9,
+    "min_level": 12
+  },
+  {
+    "id": 111,
+    "name": "Sand Bag",
+    "category": "Cement & Consumables",
+    "quantity": 56,
+    "price": 10.0,
+    "min_level": 12
+  },
+  {
+    "id": 112,
+    "name": "Gloves",
+    "category": "Cement & Consumables",
+    "quantity": 9,
+    "price": 3.0,
+    "min_level": 12
+  }
+]
