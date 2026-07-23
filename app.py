@@ -4,6 +4,7 @@
 
 import json
 import os
+from datetime import datetime
 
 from flask import Flask, render_template, request, redirect, url_for
 
@@ -70,14 +71,24 @@ def login():
     return render_template("login.html")
 
 
-## Home page
+## Log out - sends the user back to the login page
+@app.route("/logout")
+def logout():
+    return redirect(url_for("login"))
+
+
+## Home page / dashboard
 @app.route("/")
 def index():
     items = load_stock()
     low_items = [it for it in items if it["quantity"] <= it["min_level"]]
+    today = datetime.now().strftime("%A %d %B %Y")
     return render_template("index.html",
                            total_items=len(items),
-                           low_count=len(low_items))
+                           low_count=len(low_items),
+                           low_items=low_items,
+                           sales_today=0,
+                           today=today)
 
 
 ## Stock page

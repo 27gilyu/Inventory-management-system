@@ -3,56 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeckTrack &middot; Eco Deckmasters</title>
+    <title>Dashboard &middot; DeckTrack</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <body>
 
-    <!-- Top navigation bar (plain labels, no links yet) -->
-    <header class="topbar">
-        <span class="brand">
-            <span class="logo">&#9635;</span>
-            Deck<span class="brand-accent">Track</span>
-        </span>
-        <nav class="nav-links">
-            <span class="active">Home</span>
-            <a href="{{ url_for('stock') }}">Stock</a>
-            <span>Sales</span>
-            <span>Invoices</span>
-            <span>Estimator</span>
-            <span>Job Map</span>
-        </nav>
-        <span class="nav-user">Davinder Brar</span>
-    </header>
+    <div class="layout">
 
-    <!-- Welcome -->
-    <section class="hero">
-        <div class="hero-text">
-            <p class="eyebrow">Eco Deckmasters</p>
-            <h1>Welcome to DeckTrack</h1>
-        </div>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="s-title">DeckTrack</div>
+                <div class="s-sub">Eco Deckmasters</div>
+            </div>
 
-        <div class="hero-card">
-            <div class="hero-card-head">
-                <span class="dot"></span> Today
-            </div>
-            <div class="mini-stat">
-                <span>Stock items</span><b>{{ total_items }}</b>
-            </div>
-            <div class="mini-stat">
-                <span>Low stock</span><b class="warn">{{ low_count }}</b>
-            </div>
-            <div class="mini-stat">
-                <span>Sales today</span><b>0</b>
-            </div>
-            <div class="mini-alert">&#9888; {{ low_count }} items are low on stock &mdash; check the Stock page</div>
-        </div>
-    </section>
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('index') }}" class="active">Dashboard</a>
+                <a href="{{ url_for('stock') }}">Stock</a>
+                <span>Record Sale</span>
+                <span>Invoices</span>
+                <span>Job Estimator</span>
+                <span>Job Site Map</span>
+            </nav>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p><b>DeckTrack</b> &middot; Eco Deckmasters &middot; 15B Amherst Dr, Truganina VIC 3029</p>
-    </footer>
+            <div class="sidebar-foot">
+                <div class="s-user">Davinder (Admin)</div>
+                <a href="{{ url_for('logout') }}" class="s-logout">Log out</a>
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="main">
+            <h1 class="dash-title">Dashboard</h1>
+            <p class="dash-date">{{ today }}</p>
+
+            <!-- Stat cards -->
+            <div class="stat-cards">
+                <div class="stat-card">
+                    <div class="stat-label">Total Stock Items</div>
+                    <div class="stat-value navy">{{ total_items }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Sales Today</div>
+                    <div class="stat-value green">{{ sales_today }}</div>
+                </div>
+                <div class="stat-card low">
+                    <div class="stat-label">Low Stock Alerts</div>
+                    <div class="stat-value red">{{ low_count }}</div>
+                </div>
+            </div>
+
+            <!-- Low stock warning -->
+            {% if low_items %}
+            <div class="warning-banner">
+                <div class="warning-title">Low stock warning</div>
+                <div class="warning-text">
+                    {% for item in low_items[:4] %}{{ item.name }} ({{ item.quantity }} left){% if not loop.last %}, {% endif %}{% endfor %}{% if low_items|length > 4 %} and {{ low_items|length - 4 }} more{% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Recent sales -->
+            <h2 class="section-h">Recent Sales</h2>
+            <div class="table-wrap">
+                <table class="sales-table">
+                    <thead>
+                        <tr><th>Item</th><th>Qty</th><th>Total</th><th>Date</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>WPC Decking Board 138x23 - 5.4M</td><td>12</td><td>$660.00</td><td>23 Jul</td></tr>
+                        <tr><td>Rapid Set</td><td>20</td><td>$190.00</td><td>23 Jul</td></tr>
+                        <tr><td>Cypress Post 125x75 - 2.7M</td><td>6</td><td>$243.00</td><td>22 Jul</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="dash-buttons">
+                <button class="btn btn-navy">+ Record Sale</button>
+                <a href="{{ url_for('stock_add') }}" class="btn btn-green">+ Add Stock</a>
+            </div>
+        </main>
+
+    </div>
 
 </body>
 </html>
