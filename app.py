@@ -50,22 +50,6 @@ def get_categories(items):
     return categories
 
 
-## Groups the stock items by their category, keeping the price-list order
-def group_by_category(items):
-    groups = []
-    for item in items:
-        found = None
-        for g in groups:
-            if g["category"] == item["category"]:
-                found = g
-                break
-        if found is None:
-            found = {"category": item["category"], "products": []}
-            groups.append(found)
-        found["products"].append(item)
-    return groups
-
-
 ## Loads the user accounts from the JSON database
 def load_users():
     path = os.path.join("data", "users.json")
@@ -138,18 +122,88 @@ def index():
                            today=today)
 
 
-## Stock page - any logged in user can view
+## Stock page - list, search and sort (any logged in user can view)
 @app.route("/stock")
 def stock():
     if not is_logged_in():
         return redirect(url_for("login"))
+
     items = load_stock()
-    low_items = [it for it in items if it["quantity"] <= it["min_level"]]
-    groups = group_by_category(items)
+
+    ## Sort by name or quantity depending on which button was pressed
+    sort_by = request.args.get("sort", "name")
+    if sort_by == "quantity":
+        items = sorted(items, key=lambda i: i["quantity"])
+    else:
+        sort_by = "name"
+        items = sorted(items, key=lambda i: i["name"].lower())
+
+    low_count = len([i for i in items if i["quantity"] <= i["min_level"]])
     return render_template("stock.html",
-                           groups=groups,
+                           items=items,
+                           sort_by=sort_by,
                            total_items=len(items),
-                           low_count=len(low_items))
+                           low_count=low_count)
+
+
+## Edit a stock item - Admin only
+@app.route("/stock/edit/<int:item_id>", methods=["GET", "POST"])
+def stock_edit(item_id):
+    if not is_logged_in():
+        return redirect(url_for("login"))
+    if not is_admin():
+        return redirect(url_for("stock"))
+
+    items = load_stock()
+
+    ## Find the item we are editing
+    item = None
+    for it in items:
+        if it["id"] == item_id:
+            item = it
+            break
+    if item is None:
+        return redirect(url_for("stock"))
+
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+
+        ## Check the number fields are actually numbers
+        try:
+            quantity = int(request.form.get("quantity", 0))
+            price = float(request.form.get("price", 0))
+            min_level = int(request.form.get("min_level", 0))
+        except ValueError:
+            return render_template("stock_edit.html", item=item,
+                                   error="Quantity, price and minimum level must be numbers.")
+
+        if name == "":
+            return render_template("stock_edit.html", item=item,
+                                   error="Please enter an item name.")
+
+        ## Update the item and save the whole list back to the database
+        item["name"] = name
+        item["quantity"] = quantity
+        item["price"] = price
+        item["min_level"] = min_level
+        save_stock(items)
+        return redirect(url_for("stock"))
+
+    return render_template("stock_edit.html", item=item, error=None)
+
+
+## Delete a stock item - Admin only
+@app.route("/stock/delete/<int:item_id>", methods=["POST"])
+def stock_delete(item_id):
+    if not is_logged_in():
+        return redirect(url_for("login"))
+    if not is_admin():
+        return redirect(url_for("stock"))
+
+    items = load_stock()
+    items = [item for item in items if item["id"] != item_id]
+    save_stock(items)
+    return redirect(url_for("stock"))
 
 
 ## Add stock page - Admin only (FR02, role-based access)

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Item &middot; DeckTrack</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+    <div class="layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="s-title">DeckTrack</div>
+                <div class="s-sub">Eco Deckmasters</div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('index') }}">Dashboard</a>
+                <a href="{{ url_for('stock') }}" class="active">Stock</a>
+                <span>Record Sale</span>
+                <span>Invoices</span>
+                <span>Job Estimator</span>
+                <span>Job Site Map</span>
+            </nav>
+
+            <div class="sidebar-foot">
+                <div class="s-user">{{ session.name }} ({{ session.role|capitalize }})</div>
+                <a href="{{ url_for('logout') }}" class="s-logout">Log out</a>
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="main">
+            <h1 class="dash-title">Edit stock item</h1>
+            <p class="dash-date">Update the details for this product.</p>
+
+            <div class="card form-card">
+                {% if error %}
+                <div class="form-error">{{ error }}</div>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('stock_edit', item_id=item.id) }}">
+                    <div class="form-group">
+                        <label for="name">Item name</label>
+                        <input type="text" id="name" name="name" value="{{ item.name }}" required autofocus>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="quantity">Quantity on hand</label>
+                            <input type="number" id="quantity" name="quantity" min="0" value="{{ item.quantity }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Unit price ($)</label>
+                            <input type="number" id="price" name="price" min="0" step="0.01" value="{{ '%.2f'|format(item.price) }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="min_level">Minimum level</label>
+                            <input type="number" id="min_level" name="min_level" min="0" value="{{ item.min_level }}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-green">Save changes</button>
+                        <a href="{{ url_for('stock') }}" class="btn btn-grey">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+    </div>
+
+</body>
+</html>

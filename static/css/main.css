@@ -620,6 +620,121 @@ tr.low { background: #FBEAE8; }
 }
 .btn-navy:hover { background: #1B3556; }
 
+/* ==========================================================================
+   Stock Management page
+   ========================================================================== */
+
+/* ---- Search + add toolbar ---- */
+.stock-toolbar {
+    display: flex;
+    gap: 16px;
+    margin: 20px 0 16px;
+}
+
+.search-box {
+    flex: 1;
+    padding: 12px 14px;
+    border: 1px solid #CDD4DD;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+}
+.search-box:focus {
+    outline: none;
+    border-color: #2E5B8C;
+    box-shadow: 0 0 0 3px rgba(46, 91, 140, 0.15);
+}
+
+.stock-toolbar .btn { white-space: nowrap; padding: 12px 22px; }
+
+/* ---- Sort by pills ---- */
+.sort-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.sort-label {
+    color: #6B7480;
+    font-size: 14px;
+    margin-right: 4px;
+}
+
+.sort-pill {
+    padding: 6px 18px;
+    border-radius: 20px;
+    background: #EEF1F5;
+    color: #33475B;
+    font-size: 14px;
+    text-decoration: none;
+}
+.sort-pill:hover { background: #E2E7EE; }
+
+.sort-pill.active {
+    background: #DCE8F5;
+    color: #1F3A5F;
+    font-weight: 600;
+}
+
+/* ---- Stock table ---- */
+.stock-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.stock-table thead th {
+    background: #1F3A5F;
+    color: #fff;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 12px 16px;
+}
+
+.stock-table tbody td {
+    padding: 12px 16px;
+    font-size: 14px;
+    border-top: 1px solid #EEF1F4;
+    color: #33475B;
+}
+
+.stock-table tbody tr.low { background: #FCEBEA; }
+
+.stock-table .qty-low {
+    color: #C0392B;
+    font-weight: 700;
+}
+
+/* ---- Edit / Delete actions ---- */
+.actions { white-space: nowrap; }
+
+.link-edit {
+    color: #2E5B8C;
+    text-decoration: none;
+    margin-right: 12px;
+}
+.link-edit:hover { text-decoration: underline; }
+
+.inline-form { display: inline; }
+
+.link-delete {
+    background: none;
+    border: none;
+    color: #2E5B8C;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+    padding: 0;
+}
+.link-delete:hover { text-decoration: underline; }
+
+.table-note {
+    color: #8A93A0;
+    font-size: 13px;
+    margin-top: 14px;
+}
+
 /* ---- Smaller screens ---- */
 @media (max-width: 900px) {
     .hero { grid-template-columns: 1fr; }
