@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock &middot; DeckTrack</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/eco.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <body>
@@ -13,8 +14,8 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-brand">
+                <img src="{{ url_for('static', filename='img/eco.png') }}" alt="Eco Deckmasters" class="sidebar-logo">
                 <div class="s-title">DeckTrack</div>
-                <div class="s-sub">Eco Deckmasters</div>
             </div>
 
             <nav class="sidebar-nav">

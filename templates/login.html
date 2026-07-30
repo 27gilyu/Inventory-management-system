@@ -4,23 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log in &middot; DeckTrack</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/eco.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <body>
 
     <div class="login-wrap">
         <div class="login-box">
-            <div class="brand-lg">
-                <span class="logo">&#9635;</span>
-                <span>Deck<span class="brand-accent">Track</span></span>
-            </div>
-            <p class="login-sub">Eco Deckmasters</p>
+            <img src="{{ url_for('static', filename='img/eco.png') }}" alt="Eco Deckmasters" class="login-logo">
+            <p class="login-sub">DeckTrack</p>
 
             {% if error %}
             <div class="login-error">{{ error }}</div>
             {% endif %}
 
-            <!-- Logging in takes you to the home page -->
+            <!-- Login to the home page -->
             <form method="POST" action="{{ url_for('login') }}">
                 <div class="form-group">
                     <label for="username">Username</label>

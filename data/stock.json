@@ -894,21 +894,5 @@
     "quantity": 9,
     "price": 3.0,
     "min_level": 12
-  },
-  {
-    "id": 113,
-    "name": "TEST ITEM",
-    "category": "Hardwood Fence Packages",
-    "quantity": 12,
-    "price": 10.0,
-    "min_level": 12
-  },
-  {
-    "id": 114,
-    "name": "TEST ITEM 2",
-    "category": "Hardwood Fence Packages",
-    "quantity": 22,
-    "price": 1.0,
-    "min_level": 12
   }
 ]
