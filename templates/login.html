@@ -16,6 +16,10 @@
             </div>
             <p class="login-sub">Eco Deckmasters</p>
 
+            {% if error %}
+            <div class="login-error">{{ error }}</div>
+            {% endif %}
+
             <!-- Logging in takes you to the home page -->
             <form method="POST" action="{{ url_for('login') }}">
                 <div class="form-group">

@@ -1,0 +1,14 @@
+[
+  {
+    "username": "davinder",
+    "name": "Davinder Brar",
+    "role": "admin",
+    "password_hash": "scrypt:32768:8:1$mLp6uBMyaKfwyPTy$1e96cbd9c221a1f07d73795a0b2e0e8e5bf1e7ec862ecc7a9c27271de87ca927918c1e1ee92eb15bb4176ad89ff2e9a20ed451fb784ffe2a0241b8b9fdb3929f"
+  },
+  {
+    "username": "sarah",
+    "name": "Sarah Nguyen",
+    "role": "staff",
+    "password_hash": "scrypt:32768:8:1$THmSSY94B2Erq8RJ$26f5b8f9aa6fba93646d26d395f060591bc69e5a9fdc3778881531ed1624eccc2e9422e0cfc643a344411fdf53efa6861c7e99933b5ae1b8f2dd4d697055f4f3"
+  }
+]

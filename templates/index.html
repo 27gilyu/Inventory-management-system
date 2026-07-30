@@ -27,7 +27,7 @@
             </nav>
 
             <div class="sidebar-foot">
-                <div class="s-user">Davinder (Admin)</div>
+                <div class="s-user">{{ session.name }} ({{ session.role|capitalize }})</div>
                 <a href="{{ url_for('logout') }}" class="s-logout">Log out</a>
             </div>
         </aside>
@@ -81,7 +81,9 @@
             <!-- Action buttons -->
             <div class="dash-buttons">
                 <button class="btn btn-navy">+ Record Sale</button>
+                {% if session.role == 'admin' %}
                 <a href="{{ url_for('stock_add') }}" class="btn btn-green">+ Add Stock</a>
+                {% endif %}
             </div>
         </main>
 

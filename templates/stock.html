@@ -22,7 +22,7 @@
             <span>Estimator</span>
             <span>Job Map</span>
         </nav>
-        <span class="nav-user">Davinder Brar</span>
+        <span class="nav-user">{{ session.name }} ({{ session.role|capitalize }})</span>
     </header>
 
     <section class="page">
@@ -31,7 +31,9 @@
                 <h1>Stock</h1>
                 <p class="muted">{{ total_items }} items in the warehouse &middot; {{ low_count }} low on stock.</p>
             </div>
+            {% if session.role == 'admin' %}
             <a href="{{ url_for('stock_add') }}" class="btn btn-green">+ Add stock item</a>
+            {% endif %}
         </div>
 
         {% for group in groups %}
