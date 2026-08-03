@@ -28,6 +28,27 @@ def save_stock(items):
     f.close()
 
 
+#Load the recorded sales
+def load_sales():
+    path = os.path.join("data", "sales.json")
+    if not os.path.exists(path):
+        return []
+    f = open(path, "r", encoding="utf-8")
+    text = f.read().strip()
+    f.close()
+    if text == "":
+        return []
+    return json.loads(text)
+
+
+#Save the recorded sales
+def save_sales(sales):
+    path = os.path.join("data", "sales.json")
+    f = open(path, "w", encoding="utf-8")
+    json.dump(sales, f, indent=2)
+    f.close()
+
+
 #Works out the next id number for a new stock item
 def next_id(items):
     biggest = 0
@@ -110,12 +131,78 @@ def index():
     items = load_stock()
     low_items = [it for it in items if it["quantity"] <= it["min_level"]]
     today = datetime.now().strftime("%A %d %B %Y")
+
+    #Work out today's sales and the most recent sales for the dashboard
+    sales = load_sales()
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    sales_today = len([s for s in sales if s["date"].startswith(today_str)])
+    recent_sales = sorted(sales, key=lambda s: s["id"], reverse=True)[:5]
+
     return render_template("index.html",
                            total_items=len(items),
                            low_count=len(low_items),
                            low_items=low_items,
-                           sales_today=0,
+                           sales_today=sales_today,
+                           recent_sales=recent_sales,
                            today=today)
+
+
+#Record a sale - any logged in user (FR07/FR08)
+@app.route("/sale", methods=["GET", "POST"])
+def sale():
+    if not is_logged_in():
+        return redirect(url_for("login"))
+
+    items = load_stock()
+
+    if request.method == "POST":
+        #Read the chosen item and quantity
+        try:
+            item_id = int(request.form.get("item_id"))
+            quantity = int(request.form.get("quantity", 0))
+        except (TypeError, ValueError):
+            return render_template("sale.html", items=items, success=None,
+                                   error="Please choose an item and a valid quantity.")
+
+        #Find the item that was chosen
+        item = None
+        for it in items:
+            if it["id"] == item_id:
+                item = it
+                break
+
+        if item is None:
+            return render_template("sale.html", items=items, success=None,
+                                   error="That item could not be found.")
+        if quantity <= 0:
+            return render_template("sale.html", items=items, success=None,
+                                   error="Quantity must be at least 1.")
+        if quantity > item["quantity"]:
+            return render_template("sale.html", items=items, success=None,
+                                   error="Only " + str(item["quantity"]) + " of that item left in stock.")
+
+        #Reduce the stock on hand and save it
+        item["quantity"] -= quantity
+        save_stock(items)
+
+        #Record the sale (total is worked out here)
+        sales = load_sales()
+        new_sale = {
+            "id": (max([s["id"] for s in sales], default=0) + 1),
+            "item_name": item["name"],
+            "quantity": quantity,
+            "price": item["price"],
+            "total": round(quantity * item["price"], 2),
+            "sold_by": session.get("name"),
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        }
+        sales.append(new_sale)
+        save_sales(sales)
+
+        #Show the confirmation with an updated item list
+        return render_template("sale.html", items=load_stock(), success=new_sale, error=None)
+
+    return render_template("sale.html", items=items, success=None, error=None)
 
 
 #Stock page - list, search and sort

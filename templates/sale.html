@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Record Sale &middot; DeckTrack</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/eco.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+    <div class="layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <img src="{{ url_for('static', filename='img/eco.png') }}" alt="Eco Deckmasters" class="sidebar-logo">
+                <div class="s-title">DeckTrack</div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('index') }}">Dashboard</a>
+                <a href="{{ url_for('stock') }}">Stock</a>
+                <a href="{{ url_for('sale') }}" class="active">Record Sale</a>
+                <span>Invoices</span>
+                <span>Job Estimator</span>
+                <span>Job Site Map</span>
+            </nav>
+
+            <div class="sidebar-foot">
+                <div class="s-user">{{ session.name }} ({{ session.role|capitalize }})</div>
+                <a href="{{ url_for('logout') }}" class="s-logout">Log out</a>
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="main">
+            <h1 class="dash-title">Record a sale</h1>
+            <p class="dash-date">Choose an item and quantity &mdash; the total is worked out for you.</p>
+
+            {% if success %}
+            <div class="sale-success">
+                <div class="warning-title" style="color:#256F46;">Sale recorded &#10004;</div>
+                <p><b>{{ success.item_name }}</b> &times; {{ success.quantity }}
+                   at ${{ '%.2f'|format(success.price) }}
+                   = <b>${{ '%.2f'|format(success.total) }}</b></p>
+                <p class="dash-date">Sold by {{ success.sold_by }} on {{ success.date }}</p>
+            </div>
+            {% endif %}
+
+            <div class="card form-card">
+                {% if error %}
+                <div class="form-error">{{ error }}</div>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('sale') }}">
+                    <div class="form-group">
+                        <label for="item_id">Item</label>
+                        <select id="item_id" name="item_id" onchange="updateTotal()" required>
+                            <option value="" disabled selected>Choose an item&hellip;</option>
+                            {% for item in items %}
+                            {% if item.quantity > 0 %}
+                            <option value="{{ item.id }}" data-price="{{ item.price }}" data-stock="{{ item.quantity }}">
+                                {{ item.name }} &mdash; ${{ '%.2f'|format(item.price) }} ({{ item.quantity }} in stock)
+                            </option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quantity">Quantity</label>
+                        <input type="number" id="quantity" name="quantity" min="1" value="1" onkeyup="updateTotal()" onchange="updateTotal()" required>
+                    </div>
+
+                    <div class="sale-total">Total: <span id="total">$0.00</span></div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-green">Record sale</button>
+                        <a href="{{ url_for('index') }}" class="btn btn-grey">Back to dashboard</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+    </div>
+
+    <script>
+        // Works out the total whenever the item or quantity changes
+        function updateTotal() {
+            var select = document.getElementById("item_id");
+            var option = select.options[select.selectedIndex];
+            var price = option ? parseFloat(option.getAttribute("data-price")) : 0;
+            var qty = parseInt(document.getElementById("quantity").value) || 0;
+            var total = (price && qty > 0) ? price * qty : 0;
+            document.getElementById("total").textContent = "$" + total.toFixed(2);
+        }
+        updateTotal();
+    </script>
+
+</body>
+</html>

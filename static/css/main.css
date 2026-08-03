@@ -240,6 +240,24 @@ input:focus, select:focus {
 .form-buttons { display: flex; gap: 10px; margin-top: 8px; }
 .form-error { background: #FBEAE8; color: var(--danger); border-radius: 8px; padding: 10px 12px; font-size: 14px; margin-bottom: 16px; }
 
+/* ---- Record sale ---- */
+.sale-total {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 6px 0 16px;
+}
+.sale-total span { color: var(--green-dark); }
+
+.sale-success {
+    background: #E8F3ED;
+    border: 1px solid #C7E6D3;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+}
+.sale-success p { color: var(--text); font-size: 15px; }
+
 /* ---- Smaller screens ---- */
 @media (max-width: 900px) {
     .sidebar { width: 180px; }
