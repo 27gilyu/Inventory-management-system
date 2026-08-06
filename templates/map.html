@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Site Map &middot; DeckTrack</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/eco.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+
+    <div class="layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <img src="{{ url_for('static', filename='img/eco.png') }}" alt="Eco Deckmasters" class="sidebar-logo">
+                <div class="s-title">DeckTrack</div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('index') }}">Dashboard</a>
+                <a href="{{ url_for('stock') }}">Stock</a>
+                <a href="{{ url_for('sale') }}">Record Sale</a>
+                <span>Invoices</span>
+                <span>Job Estimator</span>
+                <a href="{{ url_for('job_map') }}" class="active">Job Site Map</a>
+            </nav>
+
+            <div class="sidebar-foot">
+                <div class="s-user">{{ session.name }} ({{ session.role|capitalize }})</div>
+                <a href="{{ url_for('logout') }}" class="s-logout">Log out</a>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="main">
+            <h1 class="dash-title">Job Site Map &amp; Delivery</h1>
+            <p class="dash-date">Enter a delivery address to map the driving route and work out the delivery charge.</p>
+
+            <div class="stock-toolbar">
+                <input type="text" id="address" class="search-box"
+                       placeholder="e.g. Melton VIC  or  12 Smith St, Noble Park"
+                       onkeydown="if(event.key==='Enter'){estimate();return false;}">
+                <button id="go" class="btn btn-green" onclick="estimate()">Map route</button>
+            </div>
+
+            <div id="maperror" class="form-error" style="display:none;"></div>
+
+            <div id="result" class="map-result" style="display:none;">
+                <div class="map-result-item"><span>Distance</span><b id="r-distance">&mdash;</b></div>
+                <div class="map-result-item"><span>Est. travel time</span><b id="r-time">&mdash;</b></div>
+                <div class="map-result-item"><span>Delivery charge</span><b id="r-price" class="price">&mdash;</b></div>
+            </div>
+
+            <div id="map"></div>
+
+            <p class="table-note">
+                Warehouse: Eco Deckmasters, 15b Amherst Drive, Truganina VIC 3029.
+                Reference charges &mdash; Melton $60, Noble Park $120.
+            </p>
+        </main>
+
+    </div>
+
+    <!-- Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Warehouse
+        var WAREHOUSE = { lat: -37.8444076, lng: 144.7557484 };
+
+        // Map
+        var map = L.map('map').setView([WAREHOUSE.lat, WAREHOUSE.lng], 11);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Pin
+        function pin(colour, label) {
+            return L.divIcon({
+                className: 'gmap-pin-wrap',
+                html: '<div class="gmap-pin" style="background:' + colour + '">' + label + '</div>',
+                iconSize: [26, 26],
+                iconAnchor: [13, 13],
+                popupAnchor: [0, -14]
+            });
+        }
+
+        var startMarker = L.marker([WAREHOUSE.lat, WAREHOUSE.lng], { icon: pin('#2E8B57', 'A') })
+                            .addTo(map).bindPopup('<b>Warehouse (A)</b><br>15b Amherst Dr, Truganina');
+
+        var endMarker = null;
+        var routeCasing = null;
+        var routeLine = null;
+
+        // Price
+        function priceFor(km) {
+            if (km <= 35) return 60;
+            if (km <= 55) return 120;
+            if (km <= 85) return 180;
+            return 240;
+        }
+
+        // Distance
+        function haversine(a, b) {
+            var R = 6371, toRad = Math.PI / 180;
+            var dLat = (b.lat - a.lat) * toRad;
+            var dLng = (b.lng - a.lng) * toRad;
+            var s = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(a.lat * toRad) * Math.cos(b.lat * toRad) *
+                    Math.sin(dLng / 2) * Math.sin(dLng / 2);
+            return R * 2 * Math.atan2(Math.sqrt(s), Math.sqrt(1 - s));
+        }
+
+        function showError(msg) {
+            var e = document.getElementById('maperror');
+            e.textContent = msg;
+            e.style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+        }
+
+        // Route
+        async function getRoute(from, to) {
+            var servers = [
+                'https://router.project-osrm.org',
+                'https://routing.openstreetmap.de/routed-car'
+            ];
+            for (var i = 0; i < servers.length; i++) {
+                try {
+                    var url = servers[i] + '/route/v1/driving/' +
+                              from.lng + ',' + from.lat + ';' + to.lng + ',' + to.lat +
+                              '?overview=full&geometries=geojson';
+                    var data = await (await fetch(url)).json();
+                    if (data.routes && data.routes.length) {
+                        var route = data.routes[0];
+                        return {
+                            km: route.distance / 1000,
+                            mins: Math.round(route.duration / 60),
+                            coords: route.geometry.coordinates.map(function (c) { return [c[1], c[0]]; })
+                        };
+                    }
+                } catch (e) {  }
+            }
+            return null;
+        }
+
+        async function estimate() {
+            var addr = document.getElementById('address').value.trim();
+            if (!addr) { showError('Please enter an address.'); return; }
+            document.getElementById('maperror').style.display = 'none';
+
+            var button = document.getElementById('go');
+            button.textContent = 'Mapping…';
+            button.disabled = true;
+
+            try {
+                // Geocode
+                var geoUrl = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' +
+                             encodeURIComponent(addr + ', Victoria, Australia');
+                var geo = await (await fetch(geoUrl)).json();
+                if (!geo.length) { showError('Could not find that address. Try adding the suburb.'); return; }
+                var job = { lat: parseFloat(geo[0].lat), lng: parseFloat(geo[0].lon) };
+                var jobLabel = geo[0].display_name;
+
+                // Route
+                var route = await getRoute(WAREHOUSE, job);
+                var km, mins, coords;
+                if (route) {
+                    km = route.km; mins = route.mins; coords = route.coords;
+                } else {
+                    km = haversine(WAREHOUSE, job); mins = null;
+                    coords = [[WAREHOUSE.lat, WAREHOUSE.lng], [job.lat, job.lng]];
+                }
+
+                // Clear
+                if (endMarker) map.removeLayer(endMarker);
+                if (routeCasing) map.removeLayer(routeCasing);
+                if (routeLine) map.removeLayer(routeLine);
+
+                // Draw
+                routeCasing = L.polyline(coords, { color: '#1A56C4', weight: 9, opacity: 0.35 }).addTo(map);
+                routeLine = L.polyline(coords, {
+                    color: '#1A73E8',
+                    weight: 5,
+                    opacity: 0.95,
+                    dashArray: route ? null : '8'
+                }).addTo(map);
+
+                // Pin
+                endMarker = L.marker([job.lat, job.lng], { icon: pin('#C0392B', 'B') })
+                             .addTo(map).bindPopup('<b>Job site (B)</b><br>' + jobLabel).openPopup();
+
+                map.fitBounds(routeLine.getBounds().pad(0.2));
+
+                // Show
+                document.getElementById('r-distance').textContent =
+                    km.toFixed(1) + ' km' + (mins === null ? ' (straight line)' : ' by road');
+                document.getElementById('r-time').textContent = mins === null ? '—' : (mins + ' min drive');
+                document.getElementById('r-price').textContent = '$' + priceFor(km).toFixed(2);
+                document.getElementById('result').style.display = 'flex';
+            } catch (err) {
+                showError('Something went wrong looking up that address. Check your internet connection.');
+            } finally {
+                button.textContent = 'Map route';
+                button.disabled = false;
+            }
+        }
+    </script>
+
+</body>
+</html>

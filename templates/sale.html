@@ -24,7 +24,7 @@
                 <a href="{{ url_for('sale') }}" class="active">Record Sale</a>
                 <span>Invoices</span>
                 <span>Job Estimator</span>
-                <span>Job Site Map</span>
+                <a href="{{ url_for('job_map') }}">Job Site Map</a>
             </nav>
 
             <div class="sidebar-foot">
@@ -33,7 +33,7 @@
             </div>
         </aside>
 
-        <!-- Main content -->
+        <!-- Main -->
         <main class="main">
             <h1 class="dash-title">Record a sale</h1>
             <p class="dash-date">Choose an item and quantity &mdash; the total is worked out for you.</p>
@@ -86,7 +86,7 @@
     </div>
 
     <script>
-        // Works out the total whenever the item or quantity changes
+        // Total
         function updateTotal() {
             var select = document.getElementById("item_id");
             var option = select.options[select.selectedIndex];

@@ -24,7 +24,7 @@
                 <a href="{{ url_for('sale') }}">Record Sale</a>
                 <span>Invoices</span>
                 <span>Job Estimator</span>
-                <span>Job Site Map</span>
+                <a href="{{ url_for('job_map') }}">Job Site Map</a>
             </nav>
 
             <div class="sidebar-foot">
@@ -33,11 +33,11 @@
             </div>
         </aside>
 
-        <!-- Main content -->
+        <!-- Main -->
         <main class="main">
             <h1 class="dash-title">Stock Management</h1>
 
-            <!-- Search + add -->
+            <!-- Search -->
             <div class="stock-toolbar">
                 <input type="text" id="search" class="search-box" placeholder="Search items..." onkeyup="filterStock()">
                 {% if session.role == 'admin' %}
@@ -45,14 +45,14 @@
                 {% endif %}
             </div>
 
-            <!-- Sort by (Admin and Staff) -->
+            <!-- Sort -->
             <div class="sort-row">
                 <span class="sort-label">Sort by:</span>
                 <a href="{{ url_for('stock', sort='name') }}" class="sort-pill {{ 'active' if sort_by == 'name' }}">Name</a>
                 <a href="{{ url_for('stock', sort='quantity') }}" class="sort-pill {{ 'active' if sort_by == 'quantity' }}">Quantity</a>
             </div>
 
-            <!-- Stock table -->
+            <!-- Table -->
             <div class="table-wrap">
                 <table class="stock-table">
                     <thead>
@@ -92,7 +92,7 @@
     </div>
 
     <script>
-        // Filters the table rows as you type in the search box
+        // Search
         function filterStock() {
             var query = document.getElementById("search").value.toLowerCase();
             var rows = document.querySelectorAll("#stock-body tr");

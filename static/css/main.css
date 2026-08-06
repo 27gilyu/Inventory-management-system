@@ -1,5 +1,4 @@
-/* DeckTrack styles - Eco Deckmasters
-   Brand colours: deep navy + eco green. */
+/* DeckTrack styles */
 
 * {
     margin: 0;
@@ -28,7 +27,7 @@ body {
 
 a { text-decoration: none; }
 
-/* ---- Buttons ---- */
+/* Buttons */
 .btn {
     display: inline-block;
     padding: 11px 20px;
@@ -45,7 +44,7 @@ a { text-decoration: none; }
 .btn-grey { background: #E9EDF2; color: var(--navy); }
 .btn-grey:hover { background: #DCE2EA; }
 
-/* ---- Login page ---- */
+/* Login */
 .login-wrap {
     min-height: 100vh;
     display: flex;
@@ -88,7 +87,7 @@ a { text-decoration: none; }
     margin-bottom: 16px;
 }
 
-/* ---- Forms ---- */
+/* Forms */
 .form-group { margin-bottom: 16px; text-align: left; }
 
 label {
@@ -120,7 +119,7 @@ input:focus, select:focus {
 
 .login-box .btn { width: 100%; margin-top: 6px; }
 
-/* ---- Sidebar layout ---- */
+/* Sidebar */
 .layout { display: flex; min-height: 100vh; }
 
 .sidebar {
@@ -175,12 +174,12 @@ input:focus, select:focus {
 .sidebar-foot .s-logout { font-size: 14px; color: #9DB2CC; text-decoration: none; }
 .sidebar-foot .s-logout:hover { color: #fff; text-decoration: underline; }
 
-/* ---- Main content ---- */
+/* Main */
 .main { flex: 1; background: #F5F7FA; padding: 30px 34px; }
 .dash-title { font-size: 26px; color: #1F2937; }
 .dash-date { color: #8A93A0; font-size: 14px; margin-bottom: 22px; }
 
-/* ---- Dashboard stat cards ---- */
+/* Dashboard */
 .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 20px; }
 .stat-card { background: #fff; border: 1px solid #E5E8EC; border-radius: 10px; padding: 20px 22px; }
 .stat-card.low { border-color: #F0C9C6; background: #FEF7F6; }
@@ -204,7 +203,7 @@ input:focus, select:focus {
 
 .dash-buttons { display: flex; gap: 14px; margin-top: 26px; }
 
-/* ---- Stock Management page ---- */
+/* Stock */
 .page-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 8px; }
 
 .stock-toolbar { display: flex; gap: 16px; margin: 20px 0 16px; }
@@ -232,7 +231,7 @@ input:focus, select:focus {
 .link-delete:hover { text-decoration: underline; }
 .table-note { color: #8A93A0; font-size: 13px; margin-top: 14px; }
 
-/* ---- Cards / forms on inner pages ---- */
+/* Forms */
 .card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 4px; }
 .form-card { max-width: 640px; margin-top: 16px; }
 .form-row { display: flex; gap: 16px; }
@@ -240,7 +239,7 @@ input:focus, select:focus {
 .form-buttons { display: flex; gap: 10px; margin-top: 8px; }
 .form-error { background: #FBEAE8; color: var(--danger); border-radius: 8px; padding: 10px 12px; font-size: 14px; margin-bottom: 16px; }
 
-/* ---- Record sale ---- */
+/* Sale */
 .sale-total {
     font-size: 20px;
     font-weight: 700;
@@ -258,7 +257,45 @@ input:focus, select:focus {
 }
 .sale-success p { color: var(--text); font-size: 15px; }
 
-/* ---- Smaller screens ---- */
+/* Map */
+#map {
+    height: 440px;
+    border-radius: 10px;
+    border: 1px solid #E5E8EC;
+    margin-top: 8px;
+    z-index: 0;
+}
+
+.map-result {
+    display: flex;
+    gap: 32px;
+    background: #fff;
+    border: 1px solid #E5E8EC;
+    border-radius: 10px;
+    padding: 16px 22px;
+    margin-bottom: 16px;
+}
+.map-result-item { display: flex; flex-direction: column; }
+.map-result-item span { color: #8A93A0; font-size: 13px; margin-bottom: 2px; }
+.map-result-item b { font-size: 20px; color: var(--navy); }
+.map-result-item b.price { color: var(--green-dark); }
+
+/* Map pins */
+.gmap-pin {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Mobile */
 @media (max-width: 900px) {
     .sidebar { width: 180px; }
 }

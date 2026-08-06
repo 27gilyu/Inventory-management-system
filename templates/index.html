@@ -24,7 +24,7 @@
                 <a href="{{ url_for('sale') }}">Record Sale</a>
                 <span>Invoices</span>
                 <span>Job Estimator</span>
-                <span>Job Site Map</span>
+                <a href="{{ url_for('job_map') }}">Job Site Map</a>
             </nav>
 
             <div class="sidebar-foot">
@@ -33,12 +33,12 @@
             </div>
         </aside>
 
-        <!-- Main content -->
+        <!-- Main -->
         <main class="main">
             <h1 class="dash-title">Dashboard</h1>
             <p class="dash-date">{{ today }}</p>
 
-            <!-- Stat cards -->
+            <!-- Stats -->
             <div class="stat-cards">
                 <div class="stat-card">
                     <div class="stat-label">Total Stock Items</div>
@@ -54,7 +54,7 @@
                 </div>
             </div>
 
-            <!-- Low stock warning -->
+            <!-- Low stock -->
             {% if low_items %}
             <div class="warning-banner">
                 <div class="warning-title">Low stock warning</div>
@@ -86,7 +86,7 @@
                 </table>
             </div>
 
-            <!-- Action buttons -->
+            <!-- Buttons -->
             <div class="dash-buttons">
                 <a href="{{ url_for('sale') }}" class="btn btn-navy">+ Record Sale</a>
                 {% if session.role == 'admin' %}

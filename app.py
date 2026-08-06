@@ -28,7 +28,7 @@ def save_stock(items):
     f.close()
 
 
-#Load the recorded sales
+#Load sales
 def load_sales():
     path = os.path.join("data", "sales.json")
     if not os.path.exists(path):
@@ -41,7 +41,7 @@ def load_sales():
     return json.loads(text)
 
 
-#Save the recorded sales
+#Save sales
 def save_sales(sales):
     path = os.path.join("data", "sales.json")
     f = open(path, "w", encoding="utf-8")
@@ -49,7 +49,7 @@ def save_sales(sales):
     f.close()
 
 
-#Works out the next id number for a new stock item
+#Next id
 def next_id(items):
     biggest = 0
     for item in items:
@@ -58,7 +58,7 @@ def next_id(items):
     return biggest + 1
 
 
-#Returns a list of the categories already used in the stock list
+#Categories
 def get_categories(items):
     categories = []
     for item in items:
@@ -67,7 +67,7 @@ def get_categories(items):
     return categories
 
 
-#Loads the user accounts from the JSON database
+#Load users
 def load_users():
     path = os.path.join("data", "users.json")
     f = open(path, "r", encoding="utf-8")
@@ -76,7 +76,7 @@ def load_users():
     return users
 
 
-#Finds a single user by their username (returns None if not found)
+#Find user
 def find_user(username):
     for user in load_users():
         if user["username"] == username:
@@ -84,30 +84,28 @@ def find_user(username):
     return None
 
 
-#True if someone is currently logged in
+#Logged in
 def is_logged_in():
     return "username" in session
 
 
-#True if the logged in user is an Admin
+#Is admin
 def is_admin():
     return session.get("role") == "admin"
 
 
-#Login page
+#Login
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
 
-        #Look the user up and check their password against the stored hash
         user = find_user(username)
         if user is None or not check_password_hash(user["password_hash"], password):
             return render_template("login.html",
                                    error="Incorrect username or password.")
 
-        #Remember who is logged in for the rest of the session
         session["username"] = user["username"]
         session["name"] = user["name"]
         session["role"] = user["role"]
@@ -116,14 +114,14 @@ def login():
     return render_template("login.html", error=None)
 
 
-#Log out
+#Logout
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("login"))
 
 
-#Home page / dashboard
+#Dashboard
 @app.route("/")
 def index():
     if not is_logged_in():
@@ -132,7 +130,6 @@ def index():
     low_items = [it for it in items if it["quantity"] <= it["min_level"]]
     today = datetime.now().strftime("%A %d %B %Y")
 
-    #Work out today's sales and the most recent sales for the dashboard
     sales = load_sales()
     today_str = datetime.now().strftime("%Y-%m-%d")
     sales_today = len([s for s in sales if s["date"].startswith(today_str)])
@@ -147,7 +144,7 @@ def index():
                            today=today)
 
 
-#Record a sale - any logged in user (FR07/FR08)
+#Record sale
 @app.route("/sale", methods=["GET", "POST"])
 def sale():
     if not is_logged_in():
@@ -156,7 +153,6 @@ def sale():
     items = load_stock()
 
     if request.method == "POST":
-        #Read the chosen item and quantity
         try:
             item_id = int(request.form.get("item_id"))
             quantity = int(request.form.get("quantity", 0))
@@ -164,7 +160,6 @@ def sale():
             return render_template("sale.html", items=items, success=None,
                                    error="Please choose an item and a valid quantity.")
 
-        #Find the item that was chosen
         item = None
         for it in items:
             if it["id"] == item_id:
@@ -181,11 +176,9 @@ def sale():
             return render_template("sale.html", items=items, success=None,
                                    error="Only " + str(item["quantity"]) + " of that item left in stock.")
 
-        #Reduce the stock on hand and save it
         item["quantity"] -= quantity
         save_stock(items)
 
-        #Record the sale (total is worked out here)
         sales = load_sales()
         new_sale = {
             "id": (max([s["id"] for s in sales], default=0) + 1),
@@ -199,13 +192,12 @@ def sale():
         sales.append(new_sale)
         save_sales(sales)
 
-        #Show the confirmation with an updated item list
         return render_template("sale.html", items=load_stock(), success=new_sale, error=None)
 
     return render_template("sale.html", items=items, success=None, error=None)
 
 
-#Stock page - list, search and sort
+#Stock
 @app.route("/stock")
 def stock():
     if not is_logged_in():
@@ -213,7 +205,6 @@ def stock():
 
     items = load_stock()
 
-    #Sort by name or quantity depending on which button was pressed
     sort_by = request.args.get("sort", "name")
     if sort_by == "quantity":
         items = sorted(items, key=lambda i: i["quantity"])
@@ -229,7 +220,7 @@ def stock():
                            low_count=low_count)
 
 
-#Edit a stock item - Admin only
+#Edit stock
 @app.route("/stock/edit/<int:item_id>", methods=["GET", "POST"])
 def stock_edit(item_id):
     if not is_logged_in():
@@ -239,7 +230,6 @@ def stock_edit(item_id):
 
     items = load_stock()
 
-    #Find the item we are editing
     item = None
     for it in items:
         if it["id"] == item_id:
@@ -251,7 +241,6 @@ def stock_edit(item_id):
     if request.method == "POST":
         name = request.form.get("name", "").strip()
 
-        #Check the number fields are actually numbers
         try:
             quantity = int(request.form.get("quantity", 0))
             price = float(request.form.get("price", 0))
@@ -264,7 +253,6 @@ def stock_edit(item_id):
             return render_template("stock_edit.html", item=item,
                                    error="Please enter an item name.")
 
-        #Update the item and save the whole list back to the database
         item["name"] = name
         item["quantity"] = quantity
         item["price"] = price
@@ -275,7 +263,7 @@ def stock_edit(item_id):
     return render_template("stock_edit.html", item=item, error=None)
 
 
-#Delete a stock item - Admin only
+#Delete stock
 @app.route("/stock/delete/<int:item_id>", methods=["POST"])
 def stock_delete(item_id):
     if not is_logged_in():
@@ -289,12 +277,11 @@ def stock_delete(item_id):
     return redirect(url_for("stock"))
 
 
-#Add stock page - Admin only
+#Add stock
 @app.route("/stock/add", methods=["GET", "POST"])
 def stock_add():
     if not is_logged_in():
         return redirect(url_for("login"))
-    #Staff are not allowed to add stock - send them back to the stock list
     if not is_admin():
         return redirect(url_for("stock"))
 
@@ -305,7 +292,6 @@ def stock_add():
         name = request.form.get("name", "").strip()
         category = request.form.get("category", "").strip()
 
-        #Checks the number fields are actually numbers
         try:
             quantity = int(request.form.get("quantity", 0))
             price = float(request.form.get("price", 0))
@@ -331,6 +317,14 @@ def stock_add():
         return redirect(url_for("stock"))
 
     return render_template("stock_add.html", categories=categories, error=None)
+
+
+#Map
+@app.route("/map")
+def job_map():
+    if not is_logged_in():
+        return redirect(url_for("login"))
+    return render_template("map.html")
 
 
 if __name__ == "__main__":
