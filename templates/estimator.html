@@ -1,1 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Estimator &middot; DeckTrack</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/eco.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
 
+    <div class="layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <img src="{{ url_for('static', filename='img/eco.png') }}" alt="Eco Deckmasters" class="sidebar-logo">
+                <div class="s-title">DeckTrack</div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('index') }}">Dashboard</a>
+                <a href="{{ url_for('stock') }}">Stock</a>
+                <a href="{{ url_for('sale') }}">Record Sale</a>
+                <span>Invoices</span>
+                <a href="{{ url_for('estimator') }}" class="active">Job Estimator</a>
+                <a href="{{ url_for('job_map') }}">Job Site Map</a>
+            </nav>
+
+            <div class="sidebar-foot">
+                <div class="s-user">{{ session.name }} ({{ session.role|capitalize }})</div>
+                <a href="{{ url_for('logout') }}" class="s-logout">Log out</a>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="main">
+            <h1 class="dash-title">Job Cost Estimator</h1>
+            <p class="dash-date">Add materials and quantities to work out the total cost of a job.</p>
+
+            <div class="card">
+                <div class="form-group">
+                    <label for="job-name">Job name / customer (optional)</label>
+                    <input type="text" id="job-name" placeholder="e.g. Backyard deck - 24 Wattle St">
+                </div>
+
+                <div class="est-builder">
+                    <div class="est-field" style="flex:2;">
+                        <label for="material">Material</label>
+                        <select id="material">
+                            {% for item in items %}
+                            <option value="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}">
+                                {{ item.name }} &mdash; ${{ '%.2f'|format(item.price) }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="est-field" style="width:130px;">
+                        <label for="qty">Quantity</label>
+                        <input type="number" id="qty" min="1" value="1">
+                    </div>
+                    <button type="button" class="btn btn-green" onclick="addMaterial()">Add material</button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-wrap" style="margin-top:16px;">
+                <table class="stock-table">
+                    <thead>
+                        <tr>
+                            <th>Material</th>
+                            <th>Qty</th>
+                            <th>Unit Price</th>
+                            <th>Line Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="est-body">
+                        <tr id="est-empty"><td colspan="5" class="empty-row">No materials added yet.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="est-total">Estimated total: <span id="est-total">$0.00</span></div>
+        </main>
+
+    </div>
+
+    <script>
+        var lineCount = 0;
+
+        // Add
+        function addMaterial() {
+            var sel = document.getElementById("material");
+            var opt = sel.options[sel.selectedIndex];
+            if (!opt) return;
+            var name = opt.getAttribute("data-name");
+            var price = parseFloat(opt.getAttribute("data-price"));
+            var qty = parseInt(document.getElementById("qty").value) || 0;
+            if (qty < 1) return;
+            var lineTotal = price * qty;
+
+            var empty = document.getElementById("est-empty");
+            if (empty) empty.remove();
+
+            var tr = document.createElement("tr");
+            tr.setAttribute("data-total", lineTotal);
+            tr.innerHTML =
+                "<td>" + name + "</td>" +
+                "<td>" + qty + "</td>" +
+                "<td>$" + price.toFixed(2) + "</td>" +
+                "<td>$" + lineTotal.toFixed(2) + "</td>" +
+                "<td class='actions'><button type='button' class='link-delete' onclick='removeRow(this)'>Remove</button></td>";
+            document.getElementById("est-body").appendChild(tr);
+            recompute();
+        }
+
+        // Remove
+        function removeRow(btn) {
+            btn.closest("tr").remove();
+            var body = document.getElementById("est-body");
+            if (!body.querySelector("tr")) {
+                body.innerHTML = "<tr id='est-empty'><td colspan='5' class='empty-row'>No materials added yet.</td></tr>";
+            }
+            recompute();
+        }
+
+        // Total
+        function recompute() {
+            var rows = document.querySelectorAll("#est-body tr[data-total]");
+            var total = 0;
+            for (var i = 0; i < rows.length; i++) {
+                total += parseFloat(rows[i].getAttribute("data-total"));
+            }
+            document.getElementById("est-total").textContent = "$" + total.toFixed(2);
+        }
+    </script>
+
+</body>
+</html>

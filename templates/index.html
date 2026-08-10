@@ -23,7 +23,7 @@
                 <a href="{{ url_for('stock') }}">Stock</a>
                 <a href="{{ url_for('sale') }}">Record Sale</a>
                 <span>Invoices</span>
-                <span>Job Estimator</span>
+                <a href="{{ url_for('estimator') }}">Job Estimator</a>
                 <a href="{{ url_for('job_map') }}">Job Site Map</a>
             </nav>
 
@@ -69,18 +69,19 @@
             <div class="table-wrap">
                 <table class="sales-table">
                     <thead>
-                        <tr><th>Item</th><th>Qty</th><th>Total</th><th>Date</th></tr>
+                        <tr><th>Invoice</th><th>Customer</th><th>Items</th><th>Total</th><th>Date</th></tr>
                     </thead>
                     <tbody>
                         {% for s in recent_sales %}
                         <tr>
-                            <td>{{ s.item_name }}</td>
-                            <td>{{ s.quantity }}</td>
+                            <td><a href="{{ url_for('invoice', sale_id=s.id) }}" class="link-edit">INV-{{ '%04d'|format(s.id) }}</a></td>
+                            <td>{{ s.customer or '—' }}</td>
+                            <td>{{ s['lines']|length }}</td>
                             <td>${{ '%.2f'|format(s.total) }}</td>
                             <td>{{ s.date }}</td>
                         </tr>
                         {% else %}
-                        <tr><td colspan="4" class="empty-row">No sales recorded yet.</td></tr>
+                        <tr><td colspan="5" class="empty-row">No sales recorded yet.</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>

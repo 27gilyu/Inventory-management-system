@@ -295,6 +295,37 @@ input:focus, select:focus {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
+/* Estimator */
+.est-builder { display: flex; gap: 14px; align-items: flex-end; }
+.est-field { display: flex; flex-direction: column; }
+.est-field label { margin-bottom: 6px; }
+.est-total { font-size: 22px; font-weight: 700; color: var(--navy); margin-top: 18px; }
+.est-total span { color: var(--green-dark); }
+
+/* Totals */
+.totals { margin-top: 10px; }
+.totals > div { display: flex; justify-content: space-between; padding: 5px 0; font-size: 15px; color: var(--text); }
+.totals .grand { border-top: 2px solid var(--line); margin-top: 6px; padding-top: 10px; font-size: 20px; font-weight: 700; color: var(--navy); }
+
+/* Invoice */
+.invoice { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 34px; max-width: 660px; }
+.invoice-head { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #22436B; padding-bottom: 18px; margin-bottom: 18px; }
+.invoice-title { font-size: 22px; font-weight: 700; color: #22436B; }
+.muted-sm { color: var(--muted); font-size: 13px; }
+.invoice-meta { display: flex; justify-content: space-between; font-size: 14px; color: var(--text); line-height: 1.7; }
+.invoice-totals { margin-top: 16px; margin-left: auto; max-width: 300px; }
+.invoice-totals > div { display: flex; justify-content: space-between; padding: 5px 0; font-size: 15px; }
+.invoice-totals .grand { border-top: 2px solid var(--line); margin-top: 6px; padding-top: 10px; font-size: 20px; font-weight: 700; color: #22436B; }
+.invoice-foot { text-align: center; color: var(--muted); font-size: 14px; margin-top: 24px; }
+
+/* Print */
+@media print {
+    .no-print { display: none !important; }
+    .layout { display: block; }
+    .main { padding: 0; background: #fff; }
+    .invoice { border: none; border-radius: 0; padding: 0; max-width: none; }
+}
+
 /* Mobile */
 @media (max-width: 900px) {
     .sidebar { width: 180px; }

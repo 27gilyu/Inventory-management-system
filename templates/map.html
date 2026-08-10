@@ -24,7 +24,7 @@
                 <a href="{{ url_for('stock') }}">Stock</a>
                 <a href="{{ url_for('sale') }}">Record Sale</a>
                 <span>Invoices</span>
-                <span>Job Estimator</span>
+                <a href="{{ url_for('estimator') }}">Job Estimator</a>
                 <a href="{{ url_for('job_map') }}" class="active">Job Site Map</a>
             </nav>
 
@@ -37,7 +37,7 @@
         <!-- Main -->
         <main class="main">
             <h1 class="dash-title">Job Site Map &amp; Delivery</h1>
-            <p class="dash-date">Enter a delivery address to map the driving route and work out the delivery charge.</p>
+            
 
             <div class="stock-toolbar">
                 <input type="text" id="address" class="search-box"
@@ -58,7 +58,6 @@
 
             <p class="table-note">
                 Warehouse: Eco Deckmasters, 15b Amherst Drive, Truganina VIC 3029.
-                Reference charges &mdash; Melton $60, Noble Park $120.
             </p>
         </main>
 

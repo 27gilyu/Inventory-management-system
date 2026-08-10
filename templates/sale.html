@@ -23,7 +23,7 @@
                 <a href="{{ url_for('stock') }}">Stock</a>
                 <a href="{{ url_for('sale') }}" class="active">Record Sale</a>
                 <span>Invoices</span>
-                <span>Job Estimator</span>
+                <a href="{{ url_for('estimator') }}">Job Estimator</a>
                 <a href="{{ url_for('job_map') }}">Job Site Map</a>
             </nav>
 
@@ -35,67 +35,170 @@
 
         <!-- Main -->
         <main class="main">
-            <h1 class="dash-title">Record a sale</h1>
-            <p class="dash-date">Choose an item and quantity &mdash; the total is worked out for you.</p>
+            <h1 class="dash-title">Record a Sale</h1>
 
-            {% if success %}
-            <div class="sale-success">
-                <div class="warning-title" style="color:#256F46;">Sale recorded &#10004;</div>
-                <p><b>{{ success.item_name }}</b> &times; {{ success.quantity }}
-                   at ${{ '%.2f'|format(success.price) }}
-                   = <b>${{ '%.2f'|format(success.total) }}</b></p>
-                <p class="dash-date">Sold by {{ success.sold_by }} on {{ success.date }}</p>
-            </div>
+            {% if error %}
+            <div class="form-error">{{ error }}</div>
             {% endif %}
 
-            <div class="card form-card">
-                {% if error %}
-                <div class="form-error">{{ error }}</div>
-                {% endif %}
+            <div class="card">
+                <div class="form-group">
+                    <label for="customer">Customer (optional)</label>
+                    <input type="text" id="customer" placeholder="Customer name">
+                </div>
 
-                <form method="POST" action="{{ url_for('sale') }}">
-                    <div class="form-group">
-                        <label for="item_id">Item</label>
-                        <select id="item_id" name="item_id" onchange="updateTotal()" required>
-                            <option value="" disabled selected>Choose an item&hellip;</option>
+                <div class="est-builder">
+                    <div class="est-field" style="flex:2;">
+                        <label for="item">Item</label>
+                        <select id="item">
                             {% for item in items %}
                             {% if item.quantity > 0 %}
-                            <option value="{{ item.id }}" data-price="{{ item.price }}" data-stock="{{ item.quantity }}">
+                            <option value="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}" data-stock="{{ item.quantity }}">
                                 {{ item.name }} &mdash; ${{ '%.2f'|format(item.price) }} ({{ item.quantity }} in stock)
                             </option>
                             {% endif %}
                             {% endfor %}
                         </select>
                     </div>
-
-                    <div class="form-group">
-                        <label for="quantity">Quantity</label>
-                        <input type="number" id="quantity" name="quantity" min="1" value="1" onkeyup="updateTotal()" onchange="updateTotal()" required>
+                    <div class="est-field" style="width:130px;">
+                        <label for="qty">Quantity</label>
+                        <input type="number" id="qty" min="1" value="1">
                     </div>
-
-                    <div class="sale-total">Total: <span id="total">$0.00</span></div>
-
-                    <div class="form-buttons">
-                        <button type="submit" class="btn btn-green">Record sale</button>
-                        <a href="{{ url_for('index') }}" class="btn btn-grey">Back to dashboard</a>
-                    </div>
-                </form>
+                    <button type="button" class="btn btn-green" onclick="addItem()">Add item</button>
+                </div>
             </div>
+
+            <!-- Table -->
+            <div class="table-wrap" style="margin-top:16px;">
+                <table class="stock-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Qty</th>
+                            <th>Unit Price</th>
+                            <th>Line Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="cart-body">
+                        <tr id="cart-empty"><td colspan="5" class="empty-row">No items added yet.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card" style="margin-top:16px; max-width:440px;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="delivery">Delivery charge ($)</label>
+                        <input type="number" id="delivery" min="0" step="0.01" value="0" onkeyup="recompute()" onchange="recompute()">
+                    </div>
+                    <div class="form-group">
+                        <label for="discount">Discount ($)</label>
+                        <input type="number" id="discount" min="0" step="0.01" value="0" onkeyup="recompute()" onchange="recompute()">
+                    </div>
+                </div>
+
+                <div class="totals">
+                    <div><span>Subtotal</span><span id="t-subtotal">$0.00</span></div>
+                    <div><span>Delivery</span><span id="t-delivery">$0.00</span></div>
+                    <div><span>Discount</span><span id="t-discount">-$0.00</span></div>
+                    <div class="grand"><span>Total</span><span id="t-total">$0.00</span></div>
+                </div>
+            </div>
+
+            <form method="POST" action="{{ url_for('sale') }}" id="sale-form" onsubmit="return prepareSubmit()">
+                <input type="hidden" name="cart" id="cart-input">
+                <input type="hidden" name="customer" id="customer-input">
+                <input type="hidden" name="delivery" id="delivery-input">
+                <input type="hidden" name="discount" id="discount-input">
+                <button type="submit" class="btn btn-navy" style="margin-top:16px;">Complete sale &amp; make invoice</button>
+            </form>
         </main>
 
     </div>
 
     <script>
-        // Total
-        function updateTotal() {
-            var select = document.getElementById("item_id");
-            var option = select.options[select.selectedIndex];
-            var price = option ? parseFloat(option.getAttribute("data-price")) : 0;
-            var qty = parseInt(document.getElementById("quantity").value) || 0;
-            var total = (price && qty > 0) ? price * qty : 0;
-            document.getElementById("total").textContent = "$" + total.toFixed(2);
+        var cart = [];
+
+        // Add
+        function addItem() {
+            var sel = document.getElementById("item");
+            var opt = sel.options[sel.selectedIndex];
+            if (!opt) return;
+            var id = parseInt(opt.value);
+            var name = opt.getAttribute("data-name");
+            var price = parseFloat(opt.getAttribute("data-price"));
+            var stock = parseInt(opt.getAttribute("data-stock"));
+            var qty = parseInt(document.getElementById("qty").value) || 0;
+            if (qty < 1) return;
+
+            var existing = null;
+            for (var i = 0; i < cart.length; i++) {
+                if (cart[i].id === id) { existing = cart[i]; break; }
+            }
+            var newQty = (existing ? existing.qty : 0) + qty;
+            if (newQty > stock) {
+                alert("Only " + stock + " of " + name + " in stock.");
+                return;
+            }
+            if (existing) { existing.qty = newQty; }
+            else { cart.push({ id: id, name: name, price: price, qty: qty }); }
+            render();
         }
-        updateTotal();
+
+        // Remove
+        function removeItem(id) {
+            cart = cart.filter(function (c) { return c.id !== id; });
+            render();
+        }
+
+        // Table
+        function render() {
+            var body = document.getElementById("cart-body");
+            if (cart.length === 0) {
+                body.innerHTML = "<tr id='cart-empty'><td colspan='5' class='empty-row'>No items added yet.</td></tr>";
+                recompute();
+                return;
+            }
+            var html = "";
+            for (var i = 0; i < cart.length; i++) {
+                var c = cart[i];
+                var lineTotal = c.price * c.qty;
+                html += "<tr>" +
+                    "<td>" + c.name + "</td>" +
+                    "<td>" + c.qty + "</td>" +
+                    "<td>$" + c.price.toFixed(2) + "</td>" +
+                    "<td>$" + lineTotal.toFixed(2) + "</td>" +
+                    "<td class='actions'><button type='button' class='link-delete' onclick='removeItem(" + c.id + ")'>Remove</button></td>" +
+                    "</tr>";
+            }
+            body.innerHTML = html;
+            recompute();
+        }
+
+        // Total
+        function recompute() {
+            var subtotal = 0;
+            for (var i = 0; i < cart.length; i++) { subtotal += cart[i].price * cart[i].qty; }
+            var delivery = parseFloat(document.getElementById("delivery").value) || 0;
+            var discount = parseFloat(document.getElementById("discount").value) || 0;
+            var total = subtotal + delivery - discount;
+            if (total < 0) total = 0;
+            document.getElementById("t-subtotal").textContent = "$" + subtotal.toFixed(2);
+            document.getElementById("t-delivery").textContent = "$" + delivery.toFixed(2);
+            document.getElementById("t-discount").textContent = "-$" + discount.toFixed(2);
+            document.getElementById("t-total").textContent = "$" + total.toFixed(2);
+        }
+
+        // Submit
+        function prepareSubmit() {
+            if (cart.length === 0) { alert("Add at least one item first."); return false; }
+            document.getElementById("cart-input").value = JSON.stringify(cart);
+            document.getElementById("customer-input").value = document.getElementById("customer").value;
+            document.getElementById("delivery-input").value = document.getElementById("delivery").value || 0;
+            document.getElementById("discount-input").value = document.getElementById("discount").value || 0;
+            return true;
+        }
     </script>
 
 </body>

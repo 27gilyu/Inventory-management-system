@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice INV-{{ '%04d'|format(sale.id) }} &middot; DeckTrack</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/eco.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+    <div class="layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar no-print">
+            <div class="sidebar-brand">
+                <img src="{{ url_for('static', filename='img/eco.png') }}" alt="Eco Deckmasters" class="sidebar-logo">
+                <div class="s-title">DeckTrack</div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('index') }}">Dashboard</a>
+                <a href="{{ url_for('stock') }}">Stock</a>
+                <a href="{{ url_for('sale') }}">Record Sale</a>
+                <span>Invoices</span>
+                <a href="{{ url_for('estimator') }}">Job Estimator</a>
+                <a href="{{ url_for('job_map') }}">Job Site Map</a>
+            </nav>
+
+            <div class="sidebar-foot">
+                <div class="s-user">{{ session.name }} ({{ session.role|capitalize }})</div>
+                <a href="{{ url_for('logout') }}" class="s-logout">Log out</a>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="main">
+            <div class="no-print" style="display:flex; gap:10px; margin-bottom:16px;">
+                <button class="btn btn-navy" onclick="window.print()">Print invoice</button>
+                <a href="{{ url_for('sale') }}" class="btn btn-green">New sale</a>
+                <a href="{{ url_for('index') }}" class="btn btn-grey">Dashboard</a>
+            </div>
+
+            <div class="invoice">
+                <div class="invoice-head">
+                    <img src="{{ url_for('static', filename='img/eco.png') }}" alt="Eco Deckmasters" style="height:64px;">
+                    <div style="text-align:right;">
+                        <div class="invoice-title">TAX INVOICE</div>
+                        <div>INV-{{ '%04d'|format(sale.id) }}</div>
+                        <div class="muted-sm">{{ sale.date }}</div>
+                    </div>
+                </div>
+
+                <div class="invoice-meta">
+                    <div>
+                        <b>Eco Deckmasters</b><br>
+                        15b Amherst Drive, Truganina VIC 3029<br>
+                        0490 016 050
+                    </div>
+                    <div style="text-align:right;">
+                        {% if sale.customer %}<b>Customer:</b> {{ sale.customer }}<br>{% endif %}
+                        <b>Served by:</b> {{ sale.sold_by }}
+                    </div>
+                </div>
+
+                <table class="stock-table" style="margin-top:18px;">
+                    <thead>
+                        <tr><th>Item</th><th>Qty</th><th>Unit Price</th><th>Line Total</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for line in sale.lines %}
+                        <tr>
+                            <td>{{ line.name }}</td>
+                            <td>{{ line.quantity }}</td>
+                            <td>${{ '%.2f'|format(line.price) }}</td>
+                            <td>${{ '%.2f'|format(line.line_total) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="invoice-totals">
+                    <div><span>Subtotal</span><span>${{ '%.2f'|format(sale.subtotal) }}</span></div>
+                    {% if sale.delivery %}<div><span>Delivery</span><span>${{ '%.2f'|format(sale.delivery) }}</span></div>{% endif %}
+                    {% if sale.discount %}<div><span>Discount</span><span>-${{ '%.2f'|format(sale.discount) }}</span></div>{% endif %}
+                    <div class="grand"><span>Total</span><span>${{ '%.2f'|format(sale.total) }}</span></div>
+                </div>
+
+                <p class="invoice-foot">Thank you for your business.</p>
+            </div>
+        </main>
+
+    </div>
+
+</body>
+</html>

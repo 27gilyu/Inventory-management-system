@@ -3,7 +3,7 @@
     "id": 1,
     "name": "Fence 2.4M CYP 125x75 Post + 1.8 Pailing",
     "category": "Hardwood Fence Packages",
-    "quantity": 6,
+    "quantity": 2,
     "price": 43.3,
     "min_level": 12
   },
@@ -315,7 +315,7 @@
     "id": 40,
     "name": "Rail 2365MM / 2380MM",
     "category": "Metal Fence - All Colours",
-    "quantity": 33,
+    "quantity": 32,
     "price": 11.5,
     "min_level": 12
   },
@@ -893,6 +893,14 @@
     "category": "Cement & Consumables",
     "quantity": 9,
     "price": 3.0,
+    "min_level": 12
+  },
+  {
+    "id": 113,
+    "name": "rohan is a faggot",
+    "category": "Cladding",
+    "quantity": 69,
+    "price": 6.69,
     "min_level": 12
   }
 ]

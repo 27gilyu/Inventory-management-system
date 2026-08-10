@@ -154,47 +154,94 @@ def sale():
 
     if request.method == "POST":
         try:
-            item_id = int(request.form.get("item_id"))
-            quantity = int(request.form.get("quantity", 0))
-        except (TypeError, ValueError):
-            return render_template("sale.html", items=items, success=None,
-                                   error="Please choose an item and a valid quantity.")
+            cart = json.loads(request.form.get("cart", "[]"))
+        except ValueError:
+            cart = []
 
-        item = None
+        customer = request.form.get("customer", "").strip()
+        try:
+            delivery = float(request.form.get("delivery") or 0)
+            discount = float(request.form.get("discount") or 0)
+        except ValueError:
+            delivery = 0.0
+            discount = 0.0
+
+        if not cart:
+            return render_template("sale.html", items=items,
+                                   error="Add at least one item to the sale.")
+
+        by_id = {}
         for it in items:
-            if it["id"] == item_id:
-                item = it
-                break
+            by_id[it["id"]] = it
 
-        if item is None:
-            return render_template("sale.html", items=items, success=None,
-                                   error="That item could not be found.")
-        if quantity <= 0:
-            return render_template("sale.html", items=items, success=None,
-                                   error="Quantity must be at least 1.")
-        if quantity > item["quantity"]:
-            return render_template("sale.html", items=items, success=None,
-                                   error="Only " + str(item["quantity"]) + " of that item left in stock.")
+        #Add up how much of each item is being sold
+        wanted = {}
+        for entry in cart:
+            iid = entry.get("id")
+            qty = int(entry.get("qty", 0))
+            if iid not in by_id or qty <= 0:
+                return render_template("sale.html", items=items,
+                                       error="One of the items is invalid.")
+            wanted[iid] = wanted.get(iid, 0) + qty
 
-        item["quantity"] -= quantity
+        #Check there is enough stock
+        for iid in wanted:
+            if wanted[iid] > by_id[iid]["quantity"]:
+                return render_template("sale.html", items=items,
+                                       error="Not enough " + by_id[iid]["name"] + " in stock.")
+
+        #Build the invoice lines and reduce the stock
+        lines = []
+        subtotal = 0
+        for iid in wanted:
+            it = by_id[iid]
+            qty = wanted[iid]
+            line_total = round(qty * it["price"], 2)
+            lines.append({
+                "name": it["name"],
+                "quantity": qty,
+                "price": it["price"],
+                "line_total": line_total,
+            })
+            subtotal += line_total
+            it["quantity"] -= qty
         save_stock(items)
+
+        total = round(subtotal + delivery - discount, 2)
 
         sales = load_sales()
         new_sale = {
             "id": (max([s["id"] for s in sales], default=0) + 1),
-            "item_name": item["name"],
-            "quantity": quantity,
-            "price": item["price"],
-            "total": round(quantity * item["price"], 2),
+            "customer": customer,
+            "lines": lines,
+            "subtotal": round(subtotal, 2),
+            "delivery": round(delivery, 2),
+            "discount": round(discount, 2),
+            "total": total,
             "sold_by": session.get("name"),
             "date": datetime.now().strftime("%Y-%m-%d %H:%M"),
         }
         sales.append(new_sale)
         save_sales(sales)
 
-        return render_template("sale.html", items=load_stock(), success=new_sale, error=None)
+        return redirect(url_for("invoice", sale_id=new_sale["id"]))
 
-    return render_template("sale.html", items=items, success=None, error=None)
+    return render_template("sale.html", items=items, error=None)
+
+
+#Invoice
+@app.route("/invoice/<int:sale_id>")
+def invoice(sale_id):
+    if not is_logged_in():
+        return redirect(url_for("login"))
+    sale = None
+    for s in load_sales():
+        if s["id"] == sale_id:
+            sale = s
+            break
+    if sale is None:
+        return redirect(url_for("index"))
+    return render_template("invoice.html", sale=sale)
 
 
 #Stock
@@ -317,6 +364,15 @@ def stock_add():
         return redirect(url_for("stock"))
 
     return render_template("stock_add.html", categories=categories, error=None)
+
+
+#Estimator
+@app.route("/estimator")
+def estimator():
+    if not is_logged_in():
+        return redirect(url_for("login"))
+    items = sorted(load_stock(), key=lambda i: i["name"].lower())
+    return render_template("estimator.html", items=items)
 
 
 #Map
