@@ -59,20 +59,22 @@
                     </div>
                     <div style="text-align:right;">
                         {% if sale.customer %}<b>Customer:</b> {{ sale.customer }}<br>{% endif %}
+                        {% if sale.address %}<b>Address:</b> {{ sale.address }}<br>{% endif %}
                         <b>Served by:</b> {{ sale.sold_by }}
                     </div>
                 </div>
 
                 <table class="stock-table" style="margin-top:18px;">
                     <thead>
-                        <tr><th>Item</th><th>Qty</th><th>Unit Price</th><th>Line Total</th></tr>
+                        <tr><th>Item</th><th>Qty</th><th>Unit Price</th><th>Discount</th><th>Line Total</th></tr>
                     </thead>
                     <tbody>
                         {% for line in sale.lines %}
                         <tr>
-                            <td>{{ line.name }}</td>
+                            <td>{{ line.name }}{% if line.description %}<br><span class="muted-sm">{{ line.description }}</span>{% endif %}</td>
                             <td>{{ line.quantity }}</td>
                             <td>${{ '%.2f'|format(line.price) }}</td>
+                            <td>{% if line.discount %}-${{ '%.2f'|format(line.discount) }}{% else %}&mdash;{% endif %}</td>
                             <td>${{ '%.2f'|format(line.line_total) }}</td>
                         </tr>
                         {% endfor %}
@@ -81,8 +83,8 @@
 
                 <div class="invoice-totals">
                     <div><span>Subtotal</span><span>${{ '%.2f'|format(sale.subtotal) }}</span></div>
-                    {% if sale.delivery %}<div><span>Delivery</span><span>${{ '%.2f'|format(sale.delivery) }}</span></div>{% endif %}
                     {% if sale.discount %}<div><span>Discount</span><span>-${{ '%.2f'|format(sale.discount) }}</span></div>{% endif %}
+                    {% if sale.delivery %}<div><span>Delivery</span><span>${{ '%.2f'|format(sale.delivery) }}</span></div>{% endif %}
                     <div class="grand"><span>Total</span><span>${{ '%.2f'|format(sale.total) }}</span></div>
                 </div>
 

@@ -302,6 +302,11 @@ input:focus, select:focus {
 .est-total { font-size: 22px; font-weight: 700; color: var(--navy); margin-top: 18px; }
 .est-total span { color: var(--green-dark); }
 
+/* Cart inputs */
+.cart-input { width: 100%; padding: 7px 9px; border: 1px solid #CDD4DD; border-radius: 6px; font-size: 14px; font-family: inherit; }
+.cart-input:focus { outline: none; border-color: #2E5B8C; }
+.cart-sm { width: 90px; }
+
 /* Totals */
 .totals { margin-top: 10px; }
 .totals > div { display: flex; justify-content: space-between; padding: 5px 0; font-size: 15px; color: var(--text); }

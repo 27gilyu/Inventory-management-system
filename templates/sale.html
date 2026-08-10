@@ -42,9 +42,15 @@
             {% endif %}
 
             <div class="card">
-                <div class="form-group">
-                    <label for="customer">Customer (optional)</label>
-                    <input type="text" id="customer" placeholder="Customer name">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="customer">Customer (optional)</label>
+                        <input type="text" id="customer" placeholder="Customer name">
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Delivery / job address (optional)</label>
+                        <input type="text" id="address" placeholder="e.g. 24 Wattle St, Melton VIC">
+                    </div>
                 </div>
 
                 <div class="est-builder">
@@ -68,40 +74,43 @@
                 </div>
             </div>
 
+            <!-- Discount all -->
+            <div class="sort-row" style="margin-top:16px;">
+                <span class="sort-label">Discount all items:</span>
+                <input type="number" id="disc-all" min="0" max="100" step="1" value="0" style="width:90px;"> %
+                <button type="button" class="btn btn-grey" onclick="applyAllDiscount()">Apply to all</button>
+            </div>
+
             <!-- Table -->
-            <div class="table-wrap" style="margin-top:16px;">
+            <div class="table-wrap" style="margin-top:8px;">
                 <table class="stock-table">
                     <thead>
                         <tr>
                             <th>Item</th>
+                            <th>Description</th>
                             <th>Qty</th>
                             <th>Unit Price</th>
+                            <th>Discount ($)</th>
                             <th>Line Total</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody id="cart-body">
-                        <tr id="cart-empty"><td colspan="5" class="empty-row">No items added yet.</td></tr>
+                        <tr id="cart-empty"><td colspan="7" class="empty-row">No items added yet.</td></tr>
                     </tbody>
                 </table>
             </div>
 
             <div class="card" style="margin-top:16px; max-width:440px;">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="delivery">Delivery charge ($)</label>
-                        <input type="number" id="delivery" min="0" step="0.01" value="0" onkeyup="recompute()" onchange="recompute()">
-                    </div>
-                    <div class="form-group">
-                        <label for="discount">Discount ($)</label>
-                        <input type="number" id="discount" min="0" step="0.01" value="0" onkeyup="recompute()" onchange="recompute()">
-                    </div>
+                <div class="form-group">
+                    <label for="delivery">Delivery charge ($)</label>
+                    <input type="number" id="delivery" min="0" step="0.01" value="0" onkeyup="recompute()" onchange="recompute()">
                 </div>
 
                 <div class="totals">
                     <div><span>Subtotal</span><span id="t-subtotal">$0.00</span></div>
-                    <div><span>Delivery</span><span id="t-delivery">$0.00</span></div>
                     <div><span>Discount</span><span id="t-discount">-$0.00</span></div>
+                    <div><span>Delivery</span><span id="t-delivery">$0.00</span></div>
                     <div class="grand"><span>Total</span><span id="t-total">$0.00</span></div>
                 </div>
             </div>
@@ -109,8 +118,8 @@
             <form method="POST" action="{{ url_for('sale') }}" id="sale-form" onsubmit="return prepareSubmit()">
                 <input type="hidden" name="cart" id="cart-input">
                 <input type="hidden" name="customer" id="customer-input">
+                <input type="hidden" name="address" id="address-input">
                 <input type="hidden" name="delivery" id="delivery-input">
-                <input type="hidden" name="discount" id="discount-input">
                 <button type="submit" class="btn btn-navy" style="margin-top:16px;">Complete sale &amp; make invoice</button>
             </form>
         </main>
@@ -132,18 +141,17 @@
             var qty = parseInt(document.getElementById("qty").value) || 0;
             if (qty < 1) return;
 
-            var existing = null;
-            for (var i = 0; i < cart.length; i++) {
-                if (cart[i].id === id) { existing = cart[i]; break; }
-            }
+            var existing = find(id);
             var newQty = (existing ? existing.qty : 0) + qty;
-            if (newQty > stock) {
-                alert("Only " + stock + " of " + name + " in stock.");
-                return;
-            }
+            if (newQty > stock) { alert("Only " + stock + " of " + name + " in stock."); return; }
             if (existing) { existing.qty = newQty; }
-            else { cart.push({ id: id, name: name, price: price, qty: qty }); }
+            else { cart.push({ id: id, name: name, price: price, stock: stock, qty: qty, description: "", discount: 0 }); }
             render();
+        }
+
+        function find(id) {
+            for (var i = 0; i < cart.length; i++) { if (cart[i].id === id) return cart[i]; }
+            return null;
         }
 
         // Remove
@@ -152,22 +160,53 @@
             render();
         }
 
+        // Update
+        function updateLine(id, field, value) {
+            var c = find(id);
+            if (!c) return;
+            if (field === "qty") {
+                var q = parseInt(value) || 1;
+                if (q < 1) q = 1;
+                if (q > c.stock) { alert("Only " + c.stock + " in stock."); q = c.stock; }
+                c.qty = q;
+            } else if (field === "discount") {
+                var d = parseFloat(value) || 0;
+                if (d < 0) d = 0;
+                c.discount = d;
+            } else if (field === "description") {
+                c.description = value;
+            }
+            render();
+        }
+
+        // Discount all
+        function applyAllDiscount() {
+            var pct = parseFloat(document.getElementById("disc-all").value) || 0;
+            for (var i = 0; i < cart.length; i++) {
+                cart[i].discount = Math.round(cart[i].qty * cart[i].price * pct) / 100;
+            }
+            render();
+        }
+
         // Table
         function render() {
             var body = document.getElementById("cart-body");
             if (cart.length === 0) {
-                body.innerHTML = "<tr id='cart-empty'><td colspan='5' class='empty-row'>No items added yet.</td></tr>";
+                body.innerHTML = "<tr id='cart-empty'><td colspan='7' class='empty-row'>No items added yet.</td></tr>";
                 recompute();
                 return;
             }
             var html = "";
             for (var i = 0; i < cart.length; i++) {
                 var c = cart[i];
-                var lineTotal = c.price * c.qty;
+                var lineTotal = c.price * c.qty - c.discount;
+                if (lineTotal < 0) lineTotal = 0;
                 html += "<tr>" +
                     "<td>" + c.name + "</td>" +
-                    "<td>" + c.qty + "</td>" +
+                    "<td><input type='text' class='cart-input' value=\"" + c.description.replace(/\"/g, '&quot;') + "\" placeholder='Description' onchange=\"updateLine(" + c.id + ",'description',this.value)\"></td>" +
+                    "<td><input type='number' class='cart-input cart-sm' min='1' value='" + c.qty + "' onchange=\"updateLine(" + c.id + ",'qty',this.value)\"></td>" +
                     "<td>$" + c.price.toFixed(2) + "</td>" +
+                    "<td><input type='number' class='cart-input cart-sm' min='0' step='0.01' value='" + c.discount + "' onchange=\"updateLine(" + c.id + ",'discount',this.value)\"></td>" +
                     "<td>$" + lineTotal.toFixed(2) + "</td>" +
                     "<td class='actions'><button type='button' class='link-delete' onclick='removeItem(" + c.id + ")'>Remove</button></td>" +
                     "</tr>";
@@ -178,15 +217,17 @@
 
         // Total
         function recompute() {
-            var subtotal = 0;
-            for (var i = 0; i < cart.length; i++) { subtotal += cart[i].price * cart[i].qty; }
+            var subtotal = 0, discount = 0;
+            for (var i = 0; i < cart.length; i++) {
+                subtotal += cart[i].price * cart[i].qty;
+                discount += cart[i].discount;
+            }
             var delivery = parseFloat(document.getElementById("delivery").value) || 0;
-            var discount = parseFloat(document.getElementById("discount").value) || 0;
-            var total = subtotal + delivery - discount;
+            var total = subtotal - discount + delivery;
             if (total < 0) total = 0;
             document.getElementById("t-subtotal").textContent = "$" + subtotal.toFixed(2);
-            document.getElementById("t-delivery").textContent = "$" + delivery.toFixed(2);
             document.getElementById("t-discount").textContent = "-$" + discount.toFixed(2);
+            document.getElementById("t-delivery").textContent = "$" + delivery.toFixed(2);
             document.getElementById("t-total").textContent = "$" + total.toFixed(2);
         }
 
@@ -195,8 +236,8 @@
             if (cart.length === 0) { alert("Add at least one item first."); return false; }
             document.getElementById("cart-input").value = JSON.stringify(cart);
             document.getElementById("customer-input").value = document.getElementById("customer").value;
+            document.getElementById("address-input").value = document.getElementById("address").value;
             document.getElementById("delivery-input").value = document.getElementById("delivery").value || 0;
-            document.getElementById("discount-input").value = document.getElementById("discount").value || 0;
             return true;
         }
     </script>

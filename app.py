@@ -159,12 +159,11 @@ def sale():
             cart = []
 
         customer = request.form.get("customer", "").strip()
+        address = request.form.get("address", "").strip()
         try:
             delivery = float(request.form.get("delivery") or 0)
-            discount = float(request.form.get("discount") or 0)
         except ValueError:
             delivery = 0.0
-            discount = 0.0
 
         if not cart:
             return render_template("sale.html", items=items,
@@ -190,33 +189,50 @@ def sale():
                 return render_template("sale.html", items=items,
                                        error="Not enough " + by_id[iid]["name"] + " in stock.")
 
-        #Build the invoice lines and reduce the stock
+        #Build the invoice lines (each with its own description and discount)
         lines = []
         subtotal = 0
-        for iid in wanted:
-            it = by_id[iid]
-            qty = wanted[iid]
-            line_total = round(qty * it["price"], 2)
+        discount_total = 0
+        for entry in cart:
+            it = by_id[entry["id"]]
+            qty = int(entry["qty"])
+            try:
+                disc = float(entry.get("discount") or 0)
+            except (TypeError, ValueError):
+                disc = 0.0
+            if disc < 0:
+                disc = 0.0
+            gross = round(qty * it["price"], 2)
+            if disc > gross:
+                disc = gross
+            line_total = round(gross - disc, 2)
             lines.append({
                 "name": it["name"],
+                "description": str(entry.get("description", "")).strip(),
                 "quantity": qty,
                 "price": it["price"],
+                "discount": round(disc, 2),
                 "line_total": line_total,
             })
-            subtotal += line_total
-            it["quantity"] -= qty
+            subtotal += gross
+            discount_total += disc
+
+        #Reduce the stock
+        for iid in wanted:
+            by_id[iid]["quantity"] -= wanted[iid]
         save_stock(items)
 
-        total = round(subtotal + delivery - discount, 2)
+        total = round(subtotal - discount_total + delivery, 2)
 
         sales = load_sales()
         new_sale = {
             "id": (max([s["id"] for s in sales], default=0) + 1),
             "customer": customer,
+            "address": address,
             "lines": lines,
             "subtotal": round(subtotal, 2),
+            "discount": round(discount_total, 2),
             "delivery": round(delivery, 2),
-            "discount": round(discount, 2),
             "total": total,
             "sold_by": session.get("name"),
             "date": datetime.now().strftime("%Y-%m-%d %H:%M"),
