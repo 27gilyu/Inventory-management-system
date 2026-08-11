@@ -74,7 +74,7 @@
                             <td>{{ line.name }}{% if line.description %}<br><span class="muted-sm">{{ line.description }}</span>{% endif %}</td>
                             <td>{{ line.quantity }}</td>
                             <td>${{ '%.2f'|format(line.price) }}</td>
-                            <td>{% if line.discount %}-${{ '%.2f'|format(line.discount) }}{% else %}&mdash;{% endif %}</td>
+                            <td>{% if line.line_discount %}-${{ '%.2f'|format(line.line_discount) }}{% if line.discount_type == 'percent' %} ({{ '%g'|format(line.discount_value) }}%){% endif %}{% else %}&mdash;{% endif %}</td>
                             <td>${{ '%.2f'|format(line.line_total) }}</td>
                         </tr>
                         {% endfor %}

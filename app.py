@@ -197,25 +197,38 @@ def sale():
             it = by_id[entry["id"]]
             qty = int(entry["qty"])
             try:
-                disc = float(entry.get("discount") or 0)
+                disc_value = float(entry.get("discount") or 0)
             except (TypeError, ValueError):
-                disc = 0.0
-            if disc < 0:
-                disc = 0.0
+                disc_value = 0.0
+            if disc_value < 0:
+                disc_value = 0.0
+            disc_type = entry.get("discountType", "dollar")
+
+            #Work out the dollars off each unit
+            if disc_type == "percent":
+                if disc_value > 100:
+                    disc_value = 100
+                per_unit = it["price"] * disc_value / 100
+            else:
+                if disc_value > it["price"]:
+                    disc_value = it["price"]
+                per_unit = disc_value
+
             gross = round(qty * it["price"], 2)
-            if disc > gross:
-                disc = gross
-            line_total = round(gross - disc, 2)
+            line_discount = round(qty * per_unit, 2)
+            line_total = round(gross - line_discount, 2)
             lines.append({
                 "name": it["name"],
                 "description": str(entry.get("description", "")).strip(),
                 "quantity": qty,
                 "price": it["price"],
-                "discount": round(disc, 2),
+                "discount_type": disc_type,
+                "discount_value": round(disc_value, 2),
+                "line_discount": line_discount,
                 "line_total": line_total,
             })
             subtotal += gross
-            discount_total += disc
+            discount_total += line_discount
 
         #Reduce the stock
         for iid in wanted:

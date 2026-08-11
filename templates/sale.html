@@ -74,15 +74,8 @@
                 </div>
             </div>
 
-            <!-- Discount all -->
-            <div class="sort-row" style="margin-top:16px;">
-                <span class="sort-label">Discount all items:</span>
-                <input type="number" id="disc-all" min="0" max="100" step="1" value="0" style="width:90px;"> %
-                <button type="button" class="btn btn-grey" onclick="applyAllDiscount()">Apply to all</button>
-            </div>
-
             <!-- Table -->
-            <div class="table-wrap" style="margin-top:8px;">
+            <div class="table-wrap" style="margin-top:16px;">
                 <table class="stock-table">
                     <thead>
                         <tr>
@@ -90,7 +83,7 @@
                             <th>Description</th>
                             <th>Qty</th>
                             <th>Unit Price</th>
-                            <th>Discount ($)</th>
+                            <th>Discount</th>
                             <th>Line Total</th>
                             <th></th>
                         </tr>
@@ -98,6 +91,17 @@
                     <tbody id="cart-body">
                         <tr id="cart-empty"><td colspan="7" class="empty-row">No items added yet.</td></tr>
                     </tbody>
+                    <tfoot>
+                        <tr class="disc-all-row">
+                            <td colspan="3"></td>
+                            <td class="disc-all-label">Discount all (%)</td>
+                            <td>
+                                <input type="number" id="disc-all" class="cart-input" style="width:70px; display:inline-block;" min="0" max="100" step="1" value="0">
+                                <button type="button" class="btn btn-grey btn-xs" onclick="applyAllDiscount()">Apply</button>
+                            </td>
+                            <td colspan="2"></td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
 
@@ -145,7 +149,7 @@
             var newQty = (existing ? existing.qty : 0) + qty;
             if (newQty > stock) { alert("Only " + stock + " of " + name + " in stock."); return; }
             if (existing) { existing.qty = newQty; }
-            else { cart.push({ id: id, name: name, price: price, stock: stock, qty: qty, description: "", discount: 0 }); }
+            else { cart.push({ id: id, name: name, price: price, stock: stock, qty: qty, description: "", discount: 0, discountType: "dollar" }); }
             render();
         }
 
@@ -172,7 +176,13 @@
             } else if (field === "discount") {
                 var d = parseFloat(value) || 0;
                 if (d < 0) d = 0;
+                if (c.discountType === "percent") { if (d > 100) d = 100; }
+                else { if (d > c.price) d = c.price; }
                 c.discount = d;
+            } else if (field === "discountType") {
+                c.discountType = value;
+                if (value === "percent" && c.discount > 100) c.discount = 100;
+                if (value === "dollar" && c.discount > c.price) c.discount = c.price;
             } else if (field === "description") {
                 c.description = value;
             }
@@ -182,8 +192,10 @@
         // Discount all
         function applyAllDiscount() {
             var pct = parseFloat(document.getElementById("disc-all").value) || 0;
+            if (pct > 100) pct = 100;
             for (var i = 0; i < cart.length; i++) {
-                cart[i].discount = Math.round(cart[i].qty * cart[i].price * pct) / 100;
+                cart[i].discountType = "percent";
+                cart[i].discount = pct;
             }
             render();
         }
@@ -199,14 +211,21 @@
             var html = "";
             for (var i = 0; i < cart.length; i++) {
                 var c = cart[i];
-                var lineTotal = c.price * c.qty - c.discount;
+                var perUnit = c.discountType === "percent" ? (c.price * c.discount / 100) : c.discount;
+                var lineTotal = c.qty * (c.price - perUnit);
                 if (lineTotal < 0) lineTotal = 0;
                 html += "<tr>" +
                     "<td>" + c.name + "</td>" +
                     "<td><input type='text' class='cart-input' value=\"" + c.description.replace(/\"/g, '&quot;') + "\" placeholder='Description' onchange=\"updateLine(" + c.id + ",'description',this.value)\"></td>" +
                     "<td><input type='number' class='cart-input cart-sm' min='1' value='" + c.qty + "' onchange=\"updateLine(" + c.id + ",'qty',this.value)\"></td>" +
                     "<td>$" + c.price.toFixed(2) + "</td>" +
-                    "<td><input type='number' class='cart-input cart-sm' min='0' step='0.01' value='" + c.discount + "' onchange=\"updateLine(" + c.id + ",'discount',this.value)\"></td>" +
+                    "<td><div class='disc-cell'>" +
+                        "<input type='number' class='cart-input disc-val' min='0' step='0.01' value='" + c.discount + "' onchange=\"updateLine(" + c.id + ",'discount',this.value)\">" +
+                        "<select class='cart-input disc-type' onchange=\"updateLine(" + c.id + ",'discountType',this.value)\">" +
+                            "<option value='dollar'" + (c.discountType === "dollar" ? " selected" : "") + ">$</option>" +
+                            "<option value='percent'" + (c.discountType === "percent" ? " selected" : "") + ">%</option>" +
+                        "</select>" +
+                    "</div></td>" +
                     "<td>$" + lineTotal.toFixed(2) + "</td>" +
                     "<td class='actions'><button type='button' class='link-delete' onclick='removeItem(" + c.id + ")'>Remove</button></td>" +
                     "</tr>";
@@ -220,7 +239,8 @@
             var subtotal = 0, discount = 0;
             for (var i = 0; i < cart.length; i++) {
                 subtotal += cart[i].price * cart[i].qty;
-                discount += cart[i].discount;
+                var pu = cart[i].discountType === "percent" ? (cart[i].price * cart[i].discount / 100) : cart[i].discount;
+                discount += cart[i].qty * pu;
             }
             var delivery = parseFloat(document.getElementById("delivery").value) || 0;
             var total = subtotal - discount + delivery;

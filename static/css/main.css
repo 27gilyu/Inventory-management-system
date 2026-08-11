@@ -306,6 +306,11 @@ input:focus, select:focus {
 .cart-input { width: 100%; padding: 7px 9px; border: 1px solid #CDD4DD; border-radius: 6px; font-size: 14px; font-family: inherit; }
 .cart-input:focus { outline: none; border-color: #2E5B8C; }
 .cart-sm { width: 90px; }
+.disc-all-label { text-align: right; color: var(--muted); font-weight: 600; white-space: nowrap; }
+.btn-xs { padding: 7px 12px; font-size: 13px; }
+.disc-cell { display: flex; gap: 6px; }
+.disc-cell .disc-val { width: 70px; }
+.disc-cell .disc-type { width: 56px; padding-left: 6px; padding-right: 4px; }
 
 /* Totals */
 .totals { margin-top: 10px; }
