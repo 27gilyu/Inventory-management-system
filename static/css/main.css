@@ -311,6 +311,8 @@ input:focus, select:focus {
 .disc-cell { display: flex; gap: 6px; }
 .disc-cell .disc-val { width: 70px; }
 .disc-cell .disc-type { width: 56px; padding-left: 6px; padding-right: 4px; }
+.stock-table tfoot td { padding: 12px 16px; border-top: 1px solid var(--line); }
+.disc-all-label { vertical-align: middle; }
 
 /* Totals */
 .totals { margin-top: 10px; }

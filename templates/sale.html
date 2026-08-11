@@ -93,11 +93,12 @@
                     </tbody>
                     <tfoot>
                         <tr class="disc-all-row">
-                            <td colspan="3"></td>
-                            <td class="disc-all-label">Discount all (%)</td>
+                            <td colspan="4" class="disc-all-label">Discount all (%)</td>
                             <td>
-                                <input type="number" id="disc-all" class="cart-input" style="width:70px; display:inline-block;" min="0" max="100" step="1" value="0">
-                                <button type="button" class="btn btn-grey btn-xs" onclick="applyAllDiscount()">Apply</button>
+                                <div class="disc-cell">
+                                    <input type="number" id="disc-all" class="cart-input disc-val" min="0" max="100" step="1" value="0">
+                                    <button type="button" class="btn btn-grey btn-xs" onclick="applyAllDiscount()">Apply</button>
+                                </div>
                             </td>
                             <td colspan="2"></td>
                         </tr>
