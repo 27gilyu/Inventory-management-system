@@ -1,1 +1,25 @@
-[]
+[
+  {
+    "id": 1,
+    "customer": "",
+    "address": "",
+    "lines": [
+      {
+        "name": "Fence 2.4M CYP 125x75 Post + 1.8 Pailing",
+        "description": "",
+        "quantity": 1,
+        "price": 43.3,
+        "discount_type": "dollar",
+        "discount_value": 0.0,
+        "line_discount": 0.0,
+        "line_total": 43.3
+      }
+    ],
+    "subtotal": 43.3,
+    "discount": 0.0,
+    "delivery": 0.0,
+    "total": 43.3,
+    "sold_by": "ECO ADMIN",
+    "date": "2026-08-12 10:40"
+  }
+]
