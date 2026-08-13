@@ -22,7 +22,7 @@
                 <a href="{{ url_for('index') }}">Dashboard</a>
                 <a href="{{ url_for('stock') }}">Stock</a>
                 <a href="{{ url_for('sale') }}">Record Sale</a>
-                <span>Invoices</span>
+                <a href="{{ url_for('invoices') }}" class="active">Invoices</a>
                 <a href="{{ url_for('estimator') }}">Job Estimator</a>
                 <a href="{{ url_for('job_map') }}">Job Site Map</a>
             </nav>
@@ -35,6 +35,60 @@
 
         <!-- Main -->
         <main class="main">
+            <div class="invoice">
+                <div class="invoice-head">
+                    <div>
+                        <div class="inv-biz">Eco Deckmasters</div>
+                        <div class="inv-biz-sub">Decking &amp; Fencing Supplies &middot; 15b Amherst Drive, Truganina VIC 3029</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div class="inv-label">INVOICE</div>
+                        <div class="muted-sm">No. INV-{{ '%04d'|format(sale.id) }}</div>
+                    </div>
+                </div>
+
+                <div class="invoice-meta2">
+                    <div>Date: {{ sale.date }}</div>
+                    <div>Served by: {{ sale.sold_by }}</div>
+                    {% if sale.customer %}<div>Customer: {{ sale.customer }}</div>{% endif %}
+                    {% if sale.phone %}<div>Phone: {{ sale.phone }}</div>{% endif %}
+                    {% if sale.email %}<div>Email: {{ sale.email }}</div>{% endif %}
+                    {% if sale.address %}<div>Address: {{ sale.address }}</div>{% endif %}
+                </div>
+
+                <table class="stock-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th class="num-r">Qty</th>
+                            <th class="num-r">Unit Price</th>
+                            <th class="num-r">Discount</th>
+                            <th class="num-r">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for line in sale.lines %}
+                        <tr>
+                            <td>{{ line.name }}{% if line.description %}<br><span class="muted-sm">{{ line.description }}</span>{% endif %}</td>
+                            <td class="num-r">{{ line.quantity }}</td>
+                            <td class="num-r">${{ '%.2f'|format(line.price) }}</td>
+                            <td class="num-r">{% if line.line_discount %}-${{ '%.2f'|format(line.line_discount) }}{% if line.discount_type == 'percent' %} ({{ '%g'|format(line.discount_value) }}%){% endif %}{% else %}&mdash;{% endif %}</td>
+                            <td class="num-r">${{ '%.2f'|format(line.line_total) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="invoice-summary">
+                    <div class="inv-line"><span>Subtotal</span><span>${{ '%.2f'|format(sale.subtotal) }}</span></div>
+                    {% if sale.discount %}<div class="inv-line"><span>Discount</span><span>-${{ '%.2f'|format(sale.discount) }}</span></div>{% endif %}
+                    {% if sale.delivery %}<div class="inv-line"><span>Delivery</span><span>${{ '%.2f'|format(sale.delivery) }}</span></div>{% endif %}
+                    <div class="inv-grand"><span>Grand Total</span><span>${{ '%.2f'|format(sale.total) }}</span></div>
+                </div>
+
+                <p class="invoice-foot">Payment taken at counter. Thank you for your business.</p>
+            </div>
+
             {% set mail_body %}Hi {{ sale.customer or 'there' }},
 
 Here is your invoice from Eco Deckmasters.
@@ -52,66 +106,16 @@ Subtotal: ${{ '%.2f'|format(sale.subtotal) }}
 Thank you for your business.
 Eco Deckmasters
 0490 016 050{% endset %}
-            <div class="no-print" style="display:flex; gap:10px; margin-bottom:16px;">
-                <button class="btn btn-navy" onclick="window.print()">Print invoice</button>
+
+            <div class="no-print inv-buttons">
+                <button class="btn btn-navy inv-btn" onclick="window.print()">Print Invoice</button>
                 {% if sale.email %}
-                <a class="btn btn-green" href="mailto:{{ sale.email }}?subject={{ ('Invoice INV-%04d from Eco Deckmasters'|format(sale.id))|urlencode }}&body={{ mail_body|urlencode }}">Email invoice</a>
+                <a class="btn btn-green inv-btn" href="mailto:{{ sale.email }}?subject={{ ('Invoice INV-%04d from Eco Deckmasters'|format(sale.id))|urlencode }}&body={{ mail_body|urlencode }}">Email invoice</a>
                 {% endif %}
-                <a href="{{ url_for('sale') }}" class="btn btn-grey">New sale</a>
-                <a href="{{ url_for('index') }}" class="btn btn-grey">Dashboard</a>
+                <a class="btn btn-grey inv-btn" href="{{ url_for('sale') }}">Back to Sales</a>
             </div>
 
-            <div class="invoice">
-                <div class="invoice-head">
-                    <img src="{{ url_for('static', filename='img/eco.png') }}" alt="Eco Deckmasters" style="height:64px;">
-                    <div style="text-align:right;">
-                        <div class="invoice-title">TAX INVOICE</div>
-                        <div>INV-{{ '%04d'|format(sale.id) }}</div>
-                        <div class="muted-sm">{{ sale.date }}</div>
-                    </div>
-                </div>
-
-                <div class="invoice-meta">
-                    <div>
-                        <b>Eco Deckmasters</b><br>
-                        15b Amherst Drive, Truganina VIC 3029<br>
-                        0490 016 050
-                    </div>
-                    <div style="text-align:right;">
-                        {% if sale.customer %}<b>Customer:</b> {{ sale.customer }}<br>{% endif %}
-                        {% if sale.phone %}<b>Phone:</b> {{ sale.phone }}<br>{% endif %}
-                        {% if sale.email %}<b>Email:</b> {{ sale.email }}<br>{% endif %}
-                        {% if sale.address %}<b>Address:</b> {{ sale.address }}<br>{% endif %}
-                        <b>Served by:</b> {{ sale.sold_by }}
-                    </div>
-                </div>
-
-                <table class="stock-table" style="margin-top:18px;">
-                    <thead>
-                        <tr><th>Item</th><th>Qty</th><th>Unit Price</th><th>Discount</th><th>Line Total</th></tr>
-                    </thead>
-                    <tbody>
-                        {% for line in sale.lines %}
-                        <tr>
-                            <td>{{ line.name }}{% if line.description %}<br><span class="muted-sm">{{ line.description }}</span>{% endif %}</td>
-                            <td>{{ line.quantity }}</td>
-                            <td>${{ '%.2f'|format(line.price) }}</td>
-                            <td>{% if line.line_discount %}-${{ '%.2f'|format(line.line_discount) }}{% if line.discount_type == 'percent' %} ({{ '%g'|format(line.discount_value) }}%){% endif %}{% else %}&mdash;{% endif %}</td>
-                            <td>${{ '%.2f'|format(line.line_total) }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-
-                <div class="invoice-totals">
-                    <div><span>Subtotal</span><span>${{ '%.2f'|format(sale.subtotal) }}</span></div>
-                    {% if sale.discount %}<div><span>Discount</span><span>-${{ '%.2f'|format(sale.discount) }}</span></div>{% endif %}
-                    {% if sale.delivery %}<div><span>Delivery</span><span>${{ '%.2f'|format(sale.delivery) }}</span></div>{% endif %}
-                    <div class="grand"><span>Total</span><span>${{ '%.2f'|format(sale.total) }}</span></div>
-                </div>
-
-                <p class="invoice-foot">Thank you for your business.</p>
-            </div>
+            <p class="no-print inv-note">The Print button uses the browser print function. Only the invoice above prints, not the sidebar.</p>
         </main>
 
     </div>

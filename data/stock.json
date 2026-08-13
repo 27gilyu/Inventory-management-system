@@ -11,7 +11,7 @@
     "id": 2,
     "name": "Fence 2.7M CYP 125x75 Post + 1.8 Pailing + Capping",
     "category": "Hardwood Fence Packages",
-    "quantity": 19,
+    "quantity": 18,
     "price": 50.53,
     "min_level": 12
   },
@@ -187,7 +187,7 @@
     "id": 24,
     "name": "T3 F5 Treated Pine 140x45 - 4.8M",
     "category": "Treated Pine (T3 F5 / H3)",
-    "quantity": 65,
+    "quantity": 60,
     "price": 43.2,
     "min_level": 12
   },
@@ -659,7 +659,7 @@
     "id": 84,
     "name": "Premium Turf 3M Wide 40MM",
     "category": "Turf",
-    "quantity": 65,
+    "quantity": 63,
     "price": 17.0,
     "min_level": 12
   },

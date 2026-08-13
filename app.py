@@ -262,6 +262,16 @@ def sale():
     return render_template("sale.html", items=items, error=None)
 
 
+#Invoices
+@app.route("/invoices")
+def invoices():
+    if not is_logged_in():
+        return redirect(url_for("login"))
+    sales = sorted(load_sales(), key=lambda s: s["id"], reverse=True)
+    total_taken = round(sum(s["total"] for s in sales), 2)
+    return render_template("invoices.html", sales=sales, total_taken=total_taken)
+
+
 #Invoice
 @app.route("/invoice/<int:sale_id>")
 def invoice(sale_id):

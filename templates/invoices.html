@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoices &middot; DeckTrack</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/eco.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+    <div class="layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <img src="{{ url_for('static', filename='img/eco.png') }}" alt="Eco Deckmasters" class="sidebar-logo">
+                <div class="s-title">DeckTrack</div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('index') }}">Dashboard</a>
+                <a href="{{ url_for('stock') }}">Stock</a>
+                <a href="{{ url_for('sale') }}">Record Sale</a>
+                <a href="{{ url_for('invoices') }}" class="active">Invoices</a>
+                <a href="{{ url_for('estimator') }}">Job Estimator</a>
+                <a href="{{ url_for('job_map') }}">Job Site Map</a>
+            </nav>
+
+            <div class="sidebar-foot">
+                <div class="s-user">{{ session.name }} ({{ session.role|capitalize }})</div>
+                <a href="{{ url_for('logout') }}" class="s-logout">Log out</a>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="main">
+            <div class="page-head">
+                <div>
+                    <h1 class="dash-title">Invoices</h1>
+                    <p class="dash-date">{{ sales|length }} invoice{{ 's' if sales|length != 1 }} &middot; ${{ '%.2f'|format(total_taken) }} taken in total</p>
+                </div>
+                <a href="{{ url_for('sale') }}" class="btn btn-green">+ New Sale</a>
+            </div>
+
+            <div class="table-wrap">
+                <table class="stock-table">
+                    <thead>
+                        <tr>
+                            <th>Invoice</th>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th class="num-r">Items</th>
+                            <th class="num-r">Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in sales %}
+                        <tr>
+                            <td>INV-{{ '%04d'|format(s.id) }}</td>
+                            <td>{{ s.date }}</td>
+                            <td>{{ s.customer or '—' }}</td>
+                            <td class="num-r">{{ s['lines']|length }}</td>
+                            <td class="num-r">${{ '%.2f'|format(s.total) }}</td>
+                            <td class="num-r"><a href="{{ url_for('invoice', sale_id=s.id) }}" class="link-edit">View</a></td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="6" class="empty-row">No invoices yet. Record a sale to create one.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+    </div>
+
+</body>
+</html>
