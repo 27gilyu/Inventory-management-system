@@ -53,6 +53,17 @@
                     </div>
                 </div>
 
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">Phone number</label>
+                        <input type="text" id="phone" placeholder="e.g. 0400 000 000">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email (optional)</label>
+                        <input type="text" id="email" placeholder="name@example.com">
+                    </div>
+                </div>
+
                 <div class="est-builder">
                     <div class="est-field" style="flex:2;">
                         <label for="item">Item</label>
@@ -125,6 +136,8 @@
                 <input type="hidden" name="cart" id="cart-input">
                 <input type="hidden" name="customer" id="customer-input">
                 <input type="hidden" name="address" id="address-input">
+                <input type="hidden" name="phone" id="phone-input">
+                <input type="hidden" name="email" id="email-input">
                 <input type="hidden" name="delivery" id="delivery-input">
                 <button type="submit" class="btn btn-navy" style="margin-top:16px;">Complete sale &amp; make invoice</button>
             </form>
@@ -310,6 +323,8 @@
             document.getElementById("cart-input").value = JSON.stringify(cart);
             document.getElementById("customer-input").value = document.getElementById("customer").value;
             document.getElementById("address-input").value = document.getElementById("address").value;
+            document.getElementById("phone-input").value = document.getElementById("phone").value;
+            document.getElementById("email-input").value = document.getElementById("email").value;
             document.getElementById("delivery-input").value = document.getElementById("delivery").value || 0;
             return true;
         }

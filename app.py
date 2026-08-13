@@ -160,6 +160,8 @@ def sale():
 
         customer = request.form.get("customer", "").strip()
         address = request.form.get("address", "").strip()
+        phone = request.form.get("phone", "").strip()
+        email = request.form.get("email", "").strip()
         try:
             delivery = float(request.form.get("delivery") or 0)
         except ValueError:
@@ -242,6 +244,8 @@ def sale():
             "id": (max([s["id"] for s in sales], default=0) + 1),
             "customer": customer,
             "address": address,
+            "phone": phone,
+            "email": email,
             "lines": lines,
             "subtotal": round(subtotal, 2),
             "discount": round(discount_total, 2),
