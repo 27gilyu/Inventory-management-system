@@ -109,19 +109,36 @@ Eco Deckmasters
 
             <div class="no-print inv-buttons">
                 <button class="btn btn-navy inv-btn" onclick="window.print()">Print Invoice</button>
-                {% if sale.email %}
+                <button class="btn btn-grey inv-btn" onclick="downloadImage()">Download image</button>
                 <a class="btn btn-green inv-btn" href="mailto:{{ sale.email }}?subject={{ ('Invoice INV-%04d from Eco Deckmasters'|format(sale.id))|urlencode }}&body={{ mail_body|urlencode }}">Email invoice</a>
-                {% endif %}
                 {% if session.role == 'admin' %}
                 <a class="btn btn-grey inv-btn" href="{{ url_for('invoice_edit', sale_id=sale.id) }}">Edit</a>
                 {% endif %}
                 <a class="btn btn-grey inv-btn" href="{{ url_for('invoices') }}">Back to Invoices</a>
             </div>
-
-            <p class="no-print inv-note">The Print button uses the browser print function. Only the invoice above prints, not the sidebar.</p>
         </main>
 
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        // Save the invoice as a PNG image
+        function downloadImage() {
+            html2canvas(document.querySelector(".invoice"), { scale: 2, backgroundColor: "#ffffff" }).then(function (canvas) {
+                var link = document.createElement("a");
+                link.download = "Invoice-INV-{{ '%04d'|format(sale.id) }}.png";
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+        }
+
+        // Auto-print when opened from the invoices list Print link
+        if (new URLSearchParams(window.location.search).get("print") === "1") {
+            window.addEventListener("load", function () {
+                setTimeout(function () { window.print(); }, 400);
+            });
+        }
+    </script>
 
 </body>
 </html>

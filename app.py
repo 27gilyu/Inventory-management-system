@@ -49,6 +49,14 @@ def save_sales(sales):
     f.close()
 
 
+#Stock available when editing an invoice (current stock + what this invoice already used)
+def avail_map(items, orig):
+    m = {}
+    for it in items:
+        m[it["id"]] = it["quantity"] + orig.get(it["id"], 0)
+    return m
+
+
 #Next id
 def next_id(items):
     biggest = 0
@@ -220,6 +228,7 @@ def sale():
             line_discount = round(qty * per_unit, 2)
             line_total = round(gross - line_discount, 2)
             lines.append({
+                "id": it["id"],
                 "name": it["name"],
                 "description": str(entry.get("description", "")).strip(),
                 "quantity": qty,
@@ -304,26 +313,120 @@ def invoice_edit(sale_id):
     if sale is None:
         return redirect(url_for("invoices"))
 
+    items = load_stock()
+    by_id = {}
+    for it in items:
+        by_id[it["id"]] = it
+
+    #Make sure every line knows its stock id (older lines are matched by name)
+    for line in sale["lines"]:
+        if not line.get("id"):
+            for it in items:
+                if it["name"] == line["name"]:
+                    line["id"] = it["id"]
+                    break
+
+    #How much of each item this invoice already took out of stock
+    orig = {}
+    for line in sale["lines"]:
+        lid = line.get("id")
+        if lid is not None:
+            orig[lid] = orig.get(lid, 0) + line["quantity"]
+
     if request.method == "POST":
         sale["customer"] = request.form.get("customer", "").strip()
         sale["phone"] = request.form.get("phone", "").strip()
         sale["email"] = request.form.get("email", "").strip()
         sale["address"] = request.form.get("address", "").strip()
-
         try:
             delivery = float(request.form.get("delivery") or 0)
         except ValueError:
-            delivery = sale.get("delivery", 0)
+            delivery = 0.0
         if delivery < 0:
-            delivery = 0
-        sale["delivery"] = round(delivery, 2)
+            delivery = 0.0
 
-        #Recalculate the total with the new delivery charge
-        sale["total"] = round(sale["subtotal"] - sale.get("discount", 0) + sale["delivery"], 2)
+        try:
+            cart = json.loads(request.form.get("cart", "[]"))
+        except ValueError:
+            cart = []
+        if not cart:
+            return render_template("invoice_edit.html", sale=sale, items=items,
+                                   avail=avail_map(items, orig),
+                                   error="An invoice needs at least one item.")
+
+        #Add up new quantities and check stock (current + what this invoice already had)
+        want = {}
+        for entry in cart:
+            iid = entry.get("id")
+            qty = int(entry.get("qty", 0))
+            if iid not in by_id or qty <= 0:
+                return render_template("invoice_edit.html", sale=sale, items=items,
+                                       avail=avail_map(items, orig),
+                                       error="One of the items is invalid.")
+            want[iid] = want.get(iid, 0) + qty
+        for iid in want:
+            available = by_id[iid]["quantity"] + orig.get(iid, 0)
+            if want[iid] > available:
+                return render_template("invoice_edit.html", sale=sale, items=items,
+                                       avail=avail_map(items, orig),
+                                       error="Not enough " + by_id[iid]["name"] + " in stock.")
+
+        #Put the old quantities back, then take out the new ones
+        for iid in orig:
+            if iid in by_id:
+                by_id[iid]["quantity"] += orig[iid]
+        for iid in want:
+            by_id[iid]["quantity"] -= want[iid]
+        save_stock(items)
+
+        #Rebuild the invoice lines
+        lines = []
+        subtotal = 0
+        discount_total = 0
+        for entry in cart:
+            it = by_id[entry["id"]]
+            qty = int(entry["qty"])
+            try:
+                disc_value = float(entry.get("discount") or 0)
+            except (TypeError, ValueError):
+                disc_value = 0.0
+            if disc_value < 0:
+                disc_value = 0.0
+            disc_type = entry.get("discountType", "dollar")
+            if disc_type == "percent":
+                if disc_value > 100:
+                    disc_value = 100
+                per_unit = it["price"] * disc_value / 100
+            else:
+                if disc_value > it["price"]:
+                    disc_value = it["price"]
+                per_unit = disc_value
+            gross = round(qty * it["price"], 2)
+            line_discount = round(qty * per_unit, 2)
+            lines.append({
+                "id": it["id"],
+                "name": it["name"],
+                "description": str(entry.get("description", "")).strip(),
+                "quantity": qty,
+                "price": it["price"],
+                "discount_type": disc_type,
+                "discount_value": round(disc_value, 2),
+                "line_discount": line_discount,
+                "line_total": round(gross - line_discount, 2),
+            })
+            subtotal += gross
+            discount_total += line_discount
+
+        sale["lines"] = lines
+        sale["subtotal"] = round(subtotal, 2)
+        sale["discount"] = round(discount_total, 2)
+        sale["delivery"] = round(delivery, 2)
+        sale["total"] = round(subtotal - discount_total + delivery, 2)
         save_sales(sales)
         return redirect(url_for("invoice", sale_id=sale_id))
 
-    return render_template("invoice_edit.html", sale=sale)
+    return render_template("invoice_edit.html", sale=sale, items=items,
+                           avail=avail_map(items, orig), error=None)
 
 
 #Stock

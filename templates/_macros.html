@@ -1,0 +1,17 @@
+{% macro invoice_mailto(sale) %}{% set body %}Hi {{ sale.customer or 'there' }},
+
+Here is your invoice from Eco Deckmasters.
+
+Invoice: INV-{{ '%04d'|format(sale.id) }}
+Date: {{ sale.date }}
+
+{% for line in sale.lines %}{{ line.name }} x{{ line.quantity }} = ${{ '%.2f'|format(line.line_total) }}
+{% endfor %}
+Subtotal: ${{ '%.2f'|format(sale.subtotal) }}
+{% if sale.discount %}Discount: -${{ '%.2f'|format(sale.discount) }}
+{% endif %}{% if sale.delivery %}Delivery: ${{ '%.2f'|format(sale.delivery) }}
+{% endif %}Total: ${{ '%.2f'|format(sale.total) }}
+
+Thank you for your business.
+Eco Deckmasters
+0490 016 050{% endset %}mailto:{{ sale.email }}?subject={{ ('Invoice INV-%04d from Eco Deckmasters'|format(sale.id))|urlencode }}&body={{ body|urlencode }}{% endmacro %}
