@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Invoice INV-{{ '%04d'|format(sale.id) }} &middot; DeckTrack</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/eco.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+    <div class="layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <img src="{{ url_for('static', filename='img/eco.png') }}" alt="Eco Deckmasters" class="sidebar-logo">
+                <div class="s-title">DeckTrack</div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('index') }}">Dashboard</a>
+                <a href="{{ url_for('stock') }}">Stock</a>
+                <a href="{{ url_for('sale') }}">Record Sale</a>
+                <a href="{{ url_for('invoices') }}" class="active">Invoices</a>
+                <a href="{{ url_for('estimator') }}">Job Estimator</a>
+                <a href="{{ url_for('job_map') }}">Job Site Map</a>
+            </nav>
+
+            <div class="sidebar-foot">
+                <div class="s-user">{{ session.name }} ({{ session.role|capitalize }})</div>
+                <a href="{{ url_for('logout') }}" class="s-logout">Log out</a>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="main">
+            <h1 class="dash-title">Edit Invoice INV-{{ '%04d'|format(sale.id) }}</h1>
+            <p class="dash-date">Update the customer details and delivery charge. The items cannot be changed here.</p>
+
+            <div class="card form-card">
+                <form method="POST" action="{{ url_for('invoice_edit', sale_id=sale.id) }}">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customer">Customer</label>
+                            <input type="text" id="customer" name="customer" value="{{ sale.customer }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone number</label>
+                            <input type="text" id="phone" name="phone" value="{{ sale.phone }}">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="text" id="email" name="email" value="{{ sale.email }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Delivery / job address</label>
+                            <input type="text" id="address" name="address" value="{{ sale.address }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="max-width:220px;">
+                        <label for="delivery">Delivery charge ($)</label>
+                        <input type="number" id="delivery" name="delivery" min="0" step="0.01" value="{{ '%.2f'|format(sale.delivery) }}">
+                    </div>
+
+                    <div class="totals" style="max-width:320px;">
+                        <div><span>Subtotal</span><span>${{ '%.2f'|format(sale.subtotal) }}</span></div>
+                        {% if sale.discount %}<div><span>Discount</span><span>-${{ '%.2f'|format(sale.discount) }}</span></div>{% endif %}
+                        <div class="hint">Total updates when you save (subtotal &minus; discount + delivery).</div>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-green">Save changes</button>
+                        <a href="{{ url_for('invoice', sale_id=sale.id) }}" class="btn btn-grey">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+    </div>
+
+</body>
+</html>

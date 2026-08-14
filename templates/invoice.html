@@ -112,7 +112,10 @@ Eco Deckmasters
                 {% if sale.email %}
                 <a class="btn btn-green inv-btn" href="mailto:{{ sale.email }}?subject={{ ('Invoice INV-%04d from Eco Deckmasters'|format(sale.id))|urlencode }}&body={{ mail_body|urlencode }}">Email invoice</a>
                 {% endif %}
-                <a class="btn btn-grey inv-btn" href="{{ url_for('sale') }}">Back to Sales</a>
+                {% if session.role == 'admin' %}
+                <a class="btn btn-grey inv-btn" href="{{ url_for('invoice_edit', sale_id=sale.id) }}">Edit</a>
+                {% endif %}
+                <a class="btn btn-grey inv-btn" href="{{ url_for('invoices') }}">Back to Invoices</a>
             </div>
 
             <p class="no-print inv-note">The Print button uses the browser print function. Only the invoice above prints, not the sidebar.</p>

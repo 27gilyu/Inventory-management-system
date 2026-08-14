@@ -287,6 +287,45 @@ def invoice(sale_id):
     return render_template("invoice.html", sale=sale)
 
 
+#Edit invoice - Admin only
+@app.route("/invoice/<int:sale_id>/edit", methods=["GET", "POST"])
+def invoice_edit(sale_id):
+    if not is_logged_in():
+        return redirect(url_for("login"))
+    if not is_admin():
+        return redirect(url_for("invoices"))
+
+    sales = load_sales()
+    sale = None
+    for s in sales:
+        if s["id"] == sale_id:
+            sale = s
+            break
+    if sale is None:
+        return redirect(url_for("invoices"))
+
+    if request.method == "POST":
+        sale["customer"] = request.form.get("customer", "").strip()
+        sale["phone"] = request.form.get("phone", "").strip()
+        sale["email"] = request.form.get("email", "").strip()
+        sale["address"] = request.form.get("address", "").strip()
+
+        try:
+            delivery = float(request.form.get("delivery") or 0)
+        except ValueError:
+            delivery = sale.get("delivery", 0)
+        if delivery < 0:
+            delivery = 0
+        sale["delivery"] = round(delivery, 2)
+
+        #Recalculate the total with the new delivery charge
+        sale["total"] = round(sale["subtotal"] - sale.get("discount", 0) + sale["delivery"], 2)
+        save_sales(sales)
+        return redirect(url_for("invoice", sale_id=sale_id))
+
+    return render_template("invoice_edit.html", sale=sale)
+
+
 #Stock
 @app.route("/stock")
 def stock():

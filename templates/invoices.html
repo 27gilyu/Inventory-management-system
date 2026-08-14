@@ -63,7 +63,12 @@
                             <td>{{ s.customer or '—' }}</td>
                             <td class="num-r">{{ s['lines']|length }}</td>
                             <td class="num-r">${{ '%.2f'|format(s.total) }}</td>
-                            <td class="num-r"><a href="{{ url_for('invoice', sale_id=s.id) }}" class="link-edit">View</a></td>
+                            <td class="num-r actions">
+                                <a href="{{ url_for('invoice', sale_id=s.id) }}" class="link-edit">View</a>
+                                {% if session.role == 'admin' %}
+                                <a href="{{ url_for('invoice_edit', sale_id=s.id) }}" class="link-edit">Edit</a>
+                                {% endif %}
+                            </td>
                         </tr>
                         {% else %}
                         <tr><td colspan="6" class="empty-row">No invoices yet. Record a sale to create one.</td></tr>
