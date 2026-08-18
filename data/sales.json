@@ -1,1 +1,28 @@
-[]
+[
+  {
+    "id": 1,
+    "customer": "harjot singh",
+    "address": "",
+    "phone": "234567889990",
+    "email": "",
+    "lines": [
+      {
+        "id": 2,
+        "name": "Fence 2.7M CYP 125x75 Post + 1.8 Pailing + Capping",
+        "description": "",
+        "quantity": 1,
+        "price": 50.53,
+        "discount_type": "percent",
+        "discount_value": 100.0,
+        "line_discount": 50.53,
+        "line_total": 0.0
+      }
+    ],
+    "subtotal": 50.53,
+    "discount": 50.53,
+    "delivery": 0.0,
+    "total": 0.0,
+    "sold_by": "ECO ADMIN",
+    "date": "2026-08-17 14:08"
+  }
+]

@@ -188,7 +188,7 @@
             try {
                 var geo = await (await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" +
                     encodeURIComponent(addr + ", Victoria, Australia"))).json();
-                if (!geo.length) { status.textContent = "Address not found — enter delivery manually."; return; }
+                if (!geo.length) { status.textContent = "Address not found, enter delivery manually."; return; }
                 var job = { lat: parseFloat(geo[0].lat), lng: parseFloat(geo[0].lon) };
                 var km = await getKm(job);
                 var price = deliveryPrice(km);
